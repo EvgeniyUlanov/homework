@@ -14,7 +14,8 @@ public class InMemoryStudentsDaoImpl implements StudentDao {
     public Student findByNameOrCreate(String firstName, String lastName) {
         Student result = null;
         for (Student student : students) {
-            if (student.getFirstName().equals(firstName) && student.getLastName().equals(lastName)) {
+            if (student.getFirstName()
+                    .equalsIgnoreCase(firstName) && student.getLastName().equalsIgnoreCase(lastName)) {
                 result = student;
                 break;
             }

@@ -37,7 +37,7 @@ public class ApplicationStudentTest {
             }
             inputOutputService.out("Your test score:");
             inputOutputService.out(testResult.getRightAnswersCount() + " from " + testResult.answersCount());
-        } while (inputOutputService.ask("Finish?y/n").equalsIgnoreCase("y"));
+        } while (!inputOutputService.ask("Finish?y/n").equalsIgnoreCase("y"));
     }
 
     private Student getStudent() {

@@ -9,6 +9,4 @@ public class Main {
         ApplicationStudentTest application = context.getBean(ApplicationStudentTest.class);
         application.start();
     }
-
-
 }

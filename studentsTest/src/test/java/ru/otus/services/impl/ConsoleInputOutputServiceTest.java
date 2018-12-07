@@ -1,6 +1,8 @@
 package ru.otus.services.impl;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -13,11 +15,19 @@ import static org.mockito.Mockito.verify;
 
 public class ConsoleInputOutputServiceTest {
 
+    private PrintStream printStream;
+    private InputStream inputStream;
+
+    @Before
+    public void initMock() {
+        printStream = mock(PrintStream.class);
+        inputStream = mock(InputStream.class);
+    }
+
     @Test
     public void testAskMethod() {
         String mockInput = "answer";
-        InputStream inputStream = new ByteArrayInputStream(mockInput.getBytes());
-        PrintStream printStream = mock(PrintStream.class);
+        inputStream = new ByteArrayInputStream(mockInput.getBytes());
         ConsoleInputOutputService inputOutputService = new ConsoleInputOutputService(inputStream, printStream);
         String answer = inputOutputService.ask("question");
         verify(printStream).println("question");
@@ -27,8 +37,6 @@ public class ConsoleInputOutputServiceTest {
     @Test
     public void testMethodOut() {
         String testString = "testString";
-        InputStream inputStream = mock(InputStream.class);
-        PrintStream printStream = mock(PrintStream.class);
         ConsoleInputOutputService inputOutputService = new ConsoleInputOutputService(inputStream, printStream);
         inputOutputService.out(testString);
         verify(printStream).println(testString);
