@@ -1,6 +1,6 @@
 package ru.otus;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import ru.otus.models.*;
 import ru.otus.services.InputOutputService;
@@ -9,6 +9,7 @@ import ru.otus.services.StudentService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class ApplicationStudentTest {
@@ -16,23 +17,27 @@ public class ApplicationStudentTest {
     private InputOutputService inputOutputService;
     private QuestionService questionService;
     private StudentService studentService;
-    private String testName;
+    private MessageSource messageSource;
+    private Locale locale;
 
     public ApplicationStudentTest(
             InputOutputService inputOutputService,
             QuestionService questionService,
             StudentService studentService,
-            @Value("${test.name}") String testName) {
+            MessageSource messageSource,
+            Locale locale) {
         this.inputOutputService = inputOutputService;
         this.questionService = questionService;
         this.studentService = studentService;
-        this.testName = testName;
+        this.messageSource = messageSource;
+        this.locale = locale;
     }
 
     public void start() {
         do {
-            inputOutputService.out("This is test - " + testName);
-            inputOutputService.out("Please, identify your self");
+            String testName = getMessage("test.name");
+            inputOutputService.out(getMessage("test.entrance")+ " " + testName);
+            inputOutputService.out(getMessage("test.auth"));
             Student student = getStudent();
             TestResult testResult = new TestResult(testName);
             student.addTestResult(testResult);
@@ -40,24 +45,30 @@ public class ApplicationStudentTest {
                 List<String> givenAnswer = getAnswersListFromString(inputOutputService.ask(question.getQuestion()));
                 Answer answer = new Answer(question, givenAnswer);
                 if (answer.isRight()) {
-                    inputOutputService.out("correct");
+                    inputOutputService.out(getMessage("test.answer.correct"));
                 } else {
-                    inputOutputService.out("wrong");
+                    inputOutputService.out(getMessage("test.answer.wrong"));
                 }
                 testResult.registerAnswer(answer);
             }
-            inputOutputService.out("Your test score:");
-            inputOutputService.out(testResult.getRightAnswersCount() + " from " + testResult.answersCount());
-        } while (!inputOutputService.ask("Finish?y/n").equalsIgnoreCase("y"));
+            inputOutputService.out(getMessage("test.score"));
+            inputOutputService.out(testResult.getRightAnswersCount()
+                    + " " + getMessage("test.score.from")
+                    + " " + testResult.answersCount());
+        } while (!inputOutputService.ask(getMessage("test.finish")).equalsIgnoreCase("y"));
     }
 
     private Student getStudent() {
-        String firstName = inputOutputService.ask("enter your first name");
-        String lastName = inputOutputService.ask("enter your last name");
+        String firstName = inputOutputService.ask(getMessage("input.first.name"));
+        String lastName = inputOutputService.ask(getMessage("input.last.name"));
         return studentService.findByNameOrCreate(firstName, lastName);
     }
 
     private List<String> getAnswersListFromString(String givenAnswer) {
         return Arrays.asList(givenAnswer.split(", *"));
+    }
+
+    private String getMessage(String code) {
+        return messageSource.getMessage(code, null, locale);
     }
 }

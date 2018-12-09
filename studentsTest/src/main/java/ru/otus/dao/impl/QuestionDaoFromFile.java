@@ -1,7 +1,5 @@
 package ru.otus.dao.impl;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 import ru.otus.dao.QuestionDao;
 import ru.otus.models.Question;
 
@@ -10,14 +8,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Repository
 public class QuestionDaoFromFile implements QuestionDao {
 
     private final static String LINE_SEPARATOR = "\", *\"";
     private final static String ANSWER_SEPARATOR = ", *";
     private List<Question> questions;
 
-    public QuestionDaoFromFile(@Value("${question.file}") String filename) {
+    public QuestionDaoFromFile(String filename) {
         questions = createFromFile(filename);
     }
 
