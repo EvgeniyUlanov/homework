@@ -5,11 +5,13 @@ import ru.otus.models.Question;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class QuestionDaoFromFile implements QuestionDao {
 
-    private final static String SEPARATOR = ",";
+    private final static String LINE_SEPARATOR = "\", *\"";
+    private final static String ANSWER_SEPARATOR = ", *";
     private List<Question> questions;
 
     public QuestionDaoFromFile(String filename) {
@@ -29,16 +31,27 @@ public class QuestionDaoFromFile implements QuestionDao {
                              new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filename))
                      )) {
             while ((line = br.readLine()) != null) {
-                String[] strings = line.split(SEPARATOR);
-                if (strings.length >= 3) {
-                    Integer id = Integer.parseInt(strings[0]);
-                    Question question = new Question(id, strings[1], strings[2]);
-                    result.add(question);
+                String[] rowStrings = line.split(LINE_SEPARATOR);
+                if(rowStrings.length >= 3) {
+                    result.add(prepareQuestion(rowStrings));
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
+    }
+
+    private Question prepareQuestion(String[] rowStrings) {
+        String[] trimmedStrings = new String[rowStrings.length];
+        for (int i = 0; i < rowStrings.length; i++) {
+            trimmedStrings[i] = rowStrings[i].replace("\"", "");
+        }
+        Integer id = Integer.parseInt(trimmedStrings[0]);
+        List<String> answers = Arrays.asList(trimmedStrings[2].split(ANSWER_SEPARATOR));
+        for (int i = 0; i < answers.size(); i++) {
+            answers.set(i, answers.get(i).trim());
+        }
+        return new Question(id, trimmedStrings[1], answers);
     }
 }

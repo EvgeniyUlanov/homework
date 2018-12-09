@@ -17,7 +17,7 @@ public class QuestionServiceImplTest {
     @Test
     public void testMethodGetAll() {
         QuestionDao questionDao = mock(QuestionDao.class);
-        Question question = new Question(1, "question", "answer");
+        Question question = new Question(1, "question", Arrays.asList("answer"));
         List<Question> questions = Arrays.asList(question);
         when(questionDao.getAll()).thenReturn(questions);
         QuestionServiceImpl questionService = new QuestionServiceImpl(questionDao);

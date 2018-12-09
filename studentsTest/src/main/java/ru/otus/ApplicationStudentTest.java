@@ -5,6 +5,9 @@ import ru.otus.services.InputOutputService;
 import ru.otus.services.QuestionService;
 import ru.otus.services.StudentService;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ApplicationStudentTest {
 
     private InputOutputService inputOutputService;
@@ -31,8 +34,13 @@ public class ApplicationStudentTest {
             TestResult testResult = new TestResult(testName);
             student.addTestResult(testResult);
             for (Question question : questionService.getAll()) {
-                String givenAnswer = inputOutputService.ask(question.getQuestion());
+                List<String> givenAnswer = getAnswersListFromString(inputOutputService.ask(question.getQuestion()));
                 Answer answer = new Answer(question, givenAnswer);
+                if (answer.isRight()) {
+                    inputOutputService.out("correct");
+                } else {
+                    inputOutputService.out("wrong");
+                }
                 testResult.registerAnswer(answer);
             }
             inputOutputService.out("Your test score:");
@@ -44,5 +52,9 @@ public class ApplicationStudentTest {
         String firstName = inputOutputService.ask("enter your first name");
         String lastName = inputOutputService.ask("enter your last name");
         return studentService.findByNameOrCreate(firstName, lastName);
+    }
+
+    private List<String> getAnswersListFromString(String givenAnswer) {
+        return Arrays.asList(givenAnswer.split(", *"));
     }
 }
