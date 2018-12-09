@@ -1,11 +1,13 @@
 package ru.otus.dao.impl;
 
+import org.springframework.stereotype.Repository;
 import ru.otus.dao.StudentDao;
 import ru.otus.models.Student;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class InMemoryStudentsDaoImpl implements StudentDao {
 
     private List<Student> students = new ArrayList<>();

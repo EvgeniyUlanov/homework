@@ -1,5 +1,7 @@
 package ru.otus;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import ru.otus.models.*;
 import ru.otus.services.InputOutputService;
 import ru.otus.services.QuestionService;
@@ -8,6 +10,7 @@ import ru.otus.services.StudentService;
 import java.util.Arrays;
 import java.util.List;
 
+@Service
 public class ApplicationStudentTest {
 
     private InputOutputService inputOutputService;
@@ -19,7 +22,7 @@ public class ApplicationStudentTest {
             InputOutputService inputOutputService,
             QuestionService questionService,
             StudentService studentService,
-            String testName) {
+            @Value("${test.name}") String testName) {
         this.inputOutputService = inputOutputService;
         this.questionService = questionService;
         this.studentService = studentService;
