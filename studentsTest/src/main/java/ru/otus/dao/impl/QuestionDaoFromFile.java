@@ -23,6 +23,20 @@ public class QuestionDaoFromFile implements QuestionDao {
         return questions;
     }
 
+    @Override
+    public Question getById(int id) {
+        Question result = null;
+        if (questions != null) {
+            for (Question question : questions) {
+                if (question.getId() == id) {
+                    result = question;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
     private List<Question> createFromFile(String filename) {
         List<Question> result = new ArrayList<>();
         String line;
