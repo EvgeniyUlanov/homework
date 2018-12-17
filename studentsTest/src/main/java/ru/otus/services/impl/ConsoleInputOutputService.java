@@ -1,11 +1,13 @@
 package ru.otus.services.impl;
 
+import org.springframework.stereotype.Service;
 import ru.otus.services.InputOutputService;
 
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+@Service
 public class ConsoleInputOutputService implements InputOutputService {
 
     private Scanner scanner;

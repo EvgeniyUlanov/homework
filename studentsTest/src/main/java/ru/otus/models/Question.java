@@ -1,12 +1,14 @@
 package ru.otus.models;
 
+import java.util.List;
+
 public class Question {
 
     private Integer id;
     private String question;
-    private String rightAnswer;
+    private List<String> rightAnswer;
 
-    public Question(Integer id, String question, String rightAnswer) {
+    public Question(Integer id, String question, List<String> rightAnswer) {
         this.id = id;
         this.question = question;
         this.rightAnswer = rightAnswer;
@@ -20,7 +22,16 @@ public class Question {
         return question;
     }
 
-    public String getRightAnswer() {
+    public List<String> getRightAnswer() {
         return rightAnswer;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", question='" + question + '\'' +
+                ", rightAnswer=" + rightAnswer +
+                '}';
     }
 }

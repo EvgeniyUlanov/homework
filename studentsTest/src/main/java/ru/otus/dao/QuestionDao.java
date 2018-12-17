@@ -14,4 +14,6 @@ public interface QuestionDao {
      * @return all questions.
      */
     List<Question> getAll();
+
+    Question getById(int id);
 }
