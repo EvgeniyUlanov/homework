@@ -1,12 +1,10 @@
 package ru.otus.services.impl;
 
 import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Service;
 import ru.otus.services.MessageService;
 
 import java.util.Locale;
 
-@Service
 public class MessageServiceImpl implements MessageService {
 
     private MessageSource messageSource;
