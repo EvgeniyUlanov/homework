@@ -1,6 +1,5 @@
 package ru.otus.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +12,8 @@ import java.util.Locale;
 @Configuration
 public class AppConfig {
 
+    private final static String DEFAULT_LANGUAGE = "en";
+
     @Bean("messageSource")
     public MessageSource getMessageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -22,19 +23,17 @@ public class AppConfig {
     }
 
     @Bean
-    public Locale getLocale(@Value("${locale}") String locale) {
-        return new Locale(locale);
+    public Locale getLocale(ApplicationProperties appProp) {
+        return new Locale(appProp.getLocale());
     }
 
     @Bean
-    public QuestionDao getQuestionDao(@Value("${locale}") String language,
-                                      @Value("${question.file.name}") String fileName,
-                                      @Value("${question.file.suffix}") String fileSuffix) {
+    public QuestionDao getQuestionDao(ApplicationProperties appProp) {
         String file;
-        if (!language.equalsIgnoreCase("en")) {
-            file = fileName + "_" + language + fileSuffix;
+        if (!appProp.getLocale().equalsIgnoreCase(DEFAULT_LANGUAGE)) {
+            file = appProp.getName() + "_" + appProp.getLocale() + appProp.getSuffix();
         } else {
-            file = fileName + fileSuffix;
+            file = appProp.getName() + appProp.getSuffix();
         }
         return new QuestionDaoFromFile(file);
     }
