@@ -28,6 +28,10 @@ public class TestResult {
         return count;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public int answersCount() {
         return answers.size();
     }
