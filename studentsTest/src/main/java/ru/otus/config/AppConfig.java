@@ -16,7 +16,7 @@ public class AppConfig {
     private final static String DEFAULT_LANGUAGE = "en";
 
     @Bean
-    public MessageService getMessageService(ApplicationProperties appProp) {
+    public MessageService messageService(ApplicationProperties appProp) {
         Locale locale = new Locale(appProp.getLocale());
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:bundle");
@@ -25,7 +25,7 @@ public class AppConfig {
     }
 
     @Bean
-    public QuestionDao getQuestionDao(ApplicationProperties appProp) {
+    public QuestionDao questionDao(ApplicationProperties appProp) {
         String file;
         if (!appProp.getLocale().equalsIgnoreCase(DEFAULT_LANGUAGE)) {
             file = appProp.getName() + "_" + appProp.getLocale() + appProp.getSuffix();
