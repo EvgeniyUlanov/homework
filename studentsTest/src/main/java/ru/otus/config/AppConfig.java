@@ -1,40 +1,36 @@
 package ru.otus.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import ru.otus.dao.QuestionDao;
 import ru.otus.dao.impl.QuestionDaoFromFile;
+import ru.otus.services.MessageService;
+import ru.otus.services.impl.MessageServiceImpl;
 
 import java.util.Locale;
 
 @Configuration
 public class AppConfig {
 
-    @Bean("messageSource")
-    public MessageSource getMessageSource() {
+    private final static String DEFAULT_LANGUAGE = "en";
+
+    @Bean
+    public MessageService messageService(ApplicationProperties appProp) {
+        Locale locale = new Locale(appProp.getLocale());
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:bundle");
         messageSource.setDefaultEncoding("utf-8");
-        return messageSource;
+        return new MessageServiceImpl(messageSource, locale);
     }
 
     @Bean
-    public Locale getLocale(@Value("${locale}") String locale) {
-        return new Locale(locale);
-    }
-
-    @Bean
-    public QuestionDao getQuestionDao(@Value("${locale}") String language,
-                                      @Value("${question.file.name}") String fileName,
-                                      @Value("${question.file.suffix}") String fileSuffix) {
+    public QuestionDao questionDao(ApplicationProperties appProp) {
         String file;
-        if (!language.equalsIgnoreCase("en")) {
-            file = fileName + "_" + language + fileSuffix;
+        if (!appProp.getLocale().equalsIgnoreCase(DEFAULT_LANGUAGE)) {
+            file = appProp.getName() + "_" + appProp.getLocale() + appProp.getSuffix();
         } else {
-            file = fileName + fileSuffix;
+            file = appProp.getName() + appProp.getSuffix();
         }
         return new QuestionDaoFromFile(file);
     }

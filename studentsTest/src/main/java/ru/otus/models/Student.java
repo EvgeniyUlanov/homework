@@ -37,6 +37,10 @@ public class Student {
         testResults.add(testResult);
     }
 
+    public List<TestResult> getTestResults() {
+        return testResults;
+    }
+
     @Override
     public String toString() {
         return "Student - " + firstName + " " + lastName;

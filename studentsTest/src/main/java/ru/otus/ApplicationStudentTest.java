@@ -1,15 +1,14 @@
 package ru.otus;
 
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import ru.otus.models.*;
 import ru.otus.services.InputOutputService;
+import ru.otus.services.MessageService;
 import ru.otus.services.QuestionService;
 import ru.otus.services.StudentService;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class ApplicationStudentTest {
@@ -17,20 +16,17 @@ public class ApplicationStudentTest {
     private InputOutputService inputOutputService;
     private QuestionService questionService;
     private StudentService studentService;
-    private MessageSource messageSource;
-    private Locale locale;
+    private MessageService messageService;
 
     public ApplicationStudentTest(
             InputOutputService inputOutputService,
             QuestionService questionService,
             StudentService studentService,
-            MessageSource messageSource,
-            Locale locale) {
+            MessageService messageService) {
         this.inputOutputService = inputOutputService;
         this.questionService = questionService;
         this.studentService = studentService;
-        this.messageSource = messageSource;
-        this.locale = locale;
+        this.messageService = messageService;
     }
 
     public void start() {
@@ -55,7 +51,9 @@ public class ApplicationStudentTest {
             inputOutputService.out(testResult.getRightAnswersCount()
                     + " " + getMessage("test.score.from")
                     + " " + testResult.answersCount());
-        } while (!inputOutputService.ask(getMessage("test.finish")).equalsIgnoreCase("y"));
+        } while (!inputOutputService
+                .ask(getMessage("test.finish"))
+                .equalsIgnoreCase(getMessage("input.yes")));
     }
 
     private Student getStudent() {
@@ -69,6 +67,6 @@ public class ApplicationStudentTest {
     }
 
     private String getMessage(String code) {
-        return messageSource.getMessage(code, null, locale);
+        return messageService.getMessage(code);
     }
 }
