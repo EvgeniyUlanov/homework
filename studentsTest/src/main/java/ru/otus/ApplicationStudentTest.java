@@ -30,30 +30,26 @@ public class ApplicationStudentTest {
     }
 
     public void start() {
-        do {
-            String testName = questionService.getCurrentTestName();
-            inputOutputService.out(getMessage("test.entrance")+ " " + testName);
-            inputOutputService.out(getMessage("test.auth"));
-            Student student = getStudent();
-            TestResult testResult = new TestResult(testName);
-            student.addTestResult(testResult);
-            for (Question question : questionService.getAll()) {
-                List<String> givenAnswer = getAnswersListFromString(inputOutputService.ask(question.getQuestion()));
-                Answer answer = new Answer(question, givenAnswer);
-                if (answer.isRight()) {
-                    inputOutputService.out(getMessage("test.answer.correct"));
-                } else {
-                    inputOutputService.out(getMessage("test.answer.wrong"));
-                }
-                testResult.registerAnswer(answer);
+        String testName = questionService.getCurrentTestName();
+        inputOutputService.out(getMessage("test.entrance") + " " + testName);
+        inputOutputService.out(getMessage("test.auth"));
+        Student student = getStudent();
+        TestResult testResult = new TestResult(testName);
+        student.addTestResult(testResult);
+        for (Question question : questionService.getAll()) {
+            List<String> givenAnswer = getAnswersListFromString(inputOutputService.ask(question.getQuestion()));
+            Answer answer = new Answer(question, givenAnswer);
+            if (answer.isRight()) {
+                inputOutputService.out(getMessage("test.answer.correct"));
+            } else {
+                inputOutputService.out(getMessage("test.answer.wrong"));
             }
-            inputOutputService.out(getMessage("test.score"));
-            inputOutputService.out(testResult.getRightAnswersCount()
-                    + " " + getMessage("test.score.from")
-                    + " " + testResult.answersCount());
-        } while (!inputOutputService
-                .ask(getMessage("test.finish"))
-                .equalsIgnoreCase(getMessage("input.yes")));
+            testResult.registerAnswer(answer);
+        }
+        inputOutputService.out(getMessage("test.score"));
+        inputOutputService.out(testResult.getRightAnswersCount()
+                + " " + getMessage("test.score.from")
+                + " " + testResult.answersCount());
     }
 
     private Student getStudent() {
