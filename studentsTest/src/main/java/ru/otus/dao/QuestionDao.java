@@ -16,4 +16,6 @@ public interface QuestionDao {
     List<Question> getAll();
 
     Question getById(int id);
+
+    String getTestName();
 }

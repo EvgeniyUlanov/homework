@@ -13,9 +13,11 @@ public class QuestionDaoFromFile implements QuestionDao {
     private final static String LINE_SEPARATOR = "\", *\"";
     private final static String ANSWER_SEPARATOR = ", *";
     private List<Question> questions;
+    private String testName;
 
-    public QuestionDaoFromFile(String filename) {
+    public QuestionDaoFromFile(String testName, String filename) {
         questions = createFromFile(filename);
+        this.testName = testName;
     }
 
     @Override
@@ -35,6 +37,11 @@ public class QuestionDaoFromFile implements QuestionDao {
             }
         }
         return result;
+    }
+
+    @Override
+    public String getTestName() {
+        return testName;
     }
 
     private List<Question> createFromFile(String filename) {

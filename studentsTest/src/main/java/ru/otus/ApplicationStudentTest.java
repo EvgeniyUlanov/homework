@@ -31,7 +31,7 @@ public class ApplicationStudentTest {
 
     public void start() {
         do {
-            String testName = getMessage("test.name");
+            String testName = questionService.getCurrentTestName();
             inputOutputService.out(getMessage("test.entrance")+ " " + testName);
             inputOutputService.out(getMessage("test.auth"));
             Student student = getStudent();

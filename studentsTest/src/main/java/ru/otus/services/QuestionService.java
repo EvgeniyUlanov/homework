@@ -14,4 +14,6 @@ public interface QuestionService {
      * @return list of questions.
      */
     List<Question> getAll();
+
+    String getCurrentTestName();
 }
