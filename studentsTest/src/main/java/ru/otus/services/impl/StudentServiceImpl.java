@@ -8,6 +8,7 @@ import ru.otus.models.Student;
 public class StudentServiceImpl implements ru.otus.services.StudentService {
 
     private StudentDao studentDao;
+    private Student currentStudent;
 
     public StudentServiceImpl(StudentDao studentDao) {
         this.studentDao = studentDao;
@@ -16,5 +17,15 @@ public class StudentServiceImpl implements ru.otus.services.StudentService {
     @Override
     public Student findByNameOrCreate(String firstName, String lastName) {
         return studentDao.findByNameOrCreate(firstName, lastName);
+    }
+
+    @Override
+    public void setCurrentStudent(Student student) {
+        this.currentStudent = student;
+    }
+
+    @Override
+    public Student getCurrentStudent() {
+        return currentStudent;
     }
 }

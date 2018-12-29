@@ -3,7 +3,6 @@ package ru.otus.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import ru.otus.dao.QuestionDao;
 import ru.otus.dao.impl.QuestionDaoFromFile;
 import ru.otus.services.MessageService;
 import ru.otus.services.QuestionService;

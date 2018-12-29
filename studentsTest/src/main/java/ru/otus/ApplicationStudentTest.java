@@ -32,8 +32,7 @@ public class ApplicationStudentTest {
     public void start() {
         String testName = questionService.getCurrentTestName();
         inputOutputService.out(getMessage("test.entrance") + " " + testName);
-        inputOutputService.out(getMessage("test.auth"));
-        Student student = getStudent();
+        Student student = studentService.getCurrentStudent();
         TestResult testResult = new TestResult(testName);
         student.addTestResult(testResult);
         for (Question question : questionService.getAll()) {
@@ -50,12 +49,6 @@ public class ApplicationStudentTest {
         inputOutputService.out(testResult.getRightAnswersCount()
                 + " " + getMessage("test.score.from")
                 + " " + testResult.answersCount());
-    }
-
-    private Student getStudent() {
-        String firstName = inputOutputService.ask(getMessage("input.first.name"));
-        String lastName = inputOutputService.ask(getMessage("input.last.name"));
-        return studentService.findByNameOrCreate(firstName, lastName);
     }
 
     private List<String> getAnswersListFromString(String givenAnswer) {
