@@ -9,6 +9,7 @@ import ru.otus.ApplicationStudentTest;
 import ru.otus.config.ApplicationProperties;
 import ru.otus.dao.impl.QuestionDaoFromFile;
 import ru.otus.models.Student;
+import ru.otus.models.TestResult;
 import ru.otus.services.*;
 import ru.otus.utils.FileNameGenerator;
 
@@ -77,6 +78,26 @@ public class ShellCommands {
             questionService.setQuestionDao(new QuestionDaoFromFile(questionFileName));
         } else {
             showMessage("shell.error");
+        }
+    }
+
+    @ShellMethod("show current student results")
+    public void showResults() {
+        Student student = studentService.getCurrentStudent();
+        if (student != null) {
+            inputOutputService.out(student.toString());
+            if (student.getTestResults().size() > 0) {
+                for (TestResult testResult : student.getTestResults()) {
+                    inputOutputService.out(testResult.getName());
+                    inputOutputService.out(testResult.getRightAnswersCount()
+                            + " " + messageService.getMessage("test.score.from")
+                            + " " + testResult.answersCount());
+                }
+            } else {
+                showMessage("test.result.none");
+            }
+        } else {
+            showMessage("shell.authorize.not");
         }
     }
 
