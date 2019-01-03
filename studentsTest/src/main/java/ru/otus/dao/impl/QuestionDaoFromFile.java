@@ -15,9 +15,8 @@ public class QuestionDaoFromFile implements QuestionDao {
     private List<Question> questions;
     private String testName;
 
-    public QuestionDaoFromFile(String testName, String filename) {
+    public QuestionDaoFromFile(String filename) {
         questions = createFromFile(filename);
-        this.testName = testName;
     }
 
     @Override
@@ -51,10 +50,14 @@ public class QuestionDaoFromFile implements QuestionDao {
                      new BufferedReader(
                              new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filename))
                      )) {
-            while ((line = br.readLine()) != null) {
-                String[] rowStrings = line.split(LINE_SEPARATOR);
-                if(rowStrings.length >= 3) {
-                    result.add(prepareQuestion(rowStrings));
+            line = br.readLine();
+            if (line != null && line.contains("Test name:")) {
+                this.testName = line.replaceFirst("Test name:", "").trim();
+                while ((line = br.readLine()) != null) {
+                    String[] rowStrings = line.split(LINE_SEPARATOR);
+                    if (rowStrings.length >= 3) {
+                        result.add(prepareQuestion(rowStrings));
+                    }
                 }
             }
         } catch (Exception e) {

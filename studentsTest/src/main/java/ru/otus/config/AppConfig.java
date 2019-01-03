@@ -8,13 +8,12 @@ import ru.otus.services.MessageService;
 import ru.otus.services.QuestionService;
 import ru.otus.services.impl.MessageServiceImpl;
 import ru.otus.services.impl.QuestionServiceImpl;
+import ru.otus.utils.FileNameGenerator;
 
 import java.util.Locale;
 
 @Configuration
 public class AppConfig {
-
-    private final static String DEFAULT_LANGUAGE = "en";
 
     @Bean
     public MessageService messageService(ApplicationProperties appProp) {
@@ -26,14 +25,9 @@ public class AppConfig {
     }
 
     @Bean
-    public QuestionService questionService(ApplicationProperties appProp, MessageService messageService) {
-        String file;
-        if (!appProp.getLocale().equalsIgnoreCase(DEFAULT_LANGUAGE)) {
-            file = appProp.getName() + "_" + appProp.getLocale() + appProp.getSuffix();
-        } else {
-            file = appProp.getName() + appProp.getSuffix();
-        }
-        String testName = messageService.getMessage("test.name");
-        return new QuestionServiceImpl(new QuestionDaoFromFile(testName, file));
+    public QuestionService questionService(ApplicationProperties appProp) {
+        String file = FileNameGenerator
+                .generateFileName(appProp.getName(), appProp.getLocale(), appProp.getSuffix());
+        return new QuestionServiceImpl(new QuestionDaoFromFile(file));
     }
 }

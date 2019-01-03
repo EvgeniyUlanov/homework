@@ -5,3 +5,6 @@ spring:
 name: "questions"
 suffix: ".csv"
 locale: "ru"
+availableLanguages:
+  - ru
+  - en

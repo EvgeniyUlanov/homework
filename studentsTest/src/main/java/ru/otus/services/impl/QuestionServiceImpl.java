@@ -23,4 +23,9 @@ public class QuestionServiceImpl implements QuestionService {
     public String getCurrentTestName() {
         return questionDao.getTestName();
     }
+
+    @Override
+    public void setQuestionDao(QuestionDao questionDao) {
+        this.questionDao = questionDao;
+    }
 }

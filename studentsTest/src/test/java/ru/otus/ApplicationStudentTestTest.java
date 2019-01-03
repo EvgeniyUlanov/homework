@@ -42,6 +42,6 @@ public class ApplicationStudentTestTest {
         application.start();
         List<TestResult> testResults = student.getTestResults();
         assertThat(testResults.size(), is(1));
-        assertThat(testResults.get(0).getName(), equalTo("capitals of countries"));
+        assertThat(testResults.get(0).getName(), equalTo("test name"));
     }
 }
