@@ -17,27 +17,35 @@ public class QuestionDaoFromFile implements QuestionDao {
     private final static String ANSWER_SEPARATOR = ", *";
     private List<Question> questions;
     private String testName;
+    private String fileName;
     private FileNameGenerator fileNameGenerator;
 
     public QuestionDaoFromFile(FileNameGenerator fileNameGenerator) {
         this.fileNameGenerator = fileNameGenerator;
-        questions = createFromFile(fileNameGenerator.generateFileName());
+        this.fileName = fileNameGenerator.generateFileName();
+        questions = createFromFile(fileName);
     }
 
     @Override
     public List<Question> getAll() {
+        String actualFileName = fileNameGenerator.generateFileName();
+        if (!actualFileName.equals(fileName)) {
+            questions = createFromFile(actualFileName);
+        }
         return questions;
     }
 
     @Override
     public Question getById(int id) {
+        String actualFileName = fileNameGenerator.generateFileName();
+        if (!actualFileName.equals(fileName)) {
+            questions = createFromFile(actualFileName);
+        }
         Question result = null;
-        if (questions != null) {
-            for (Question question : questions) {
-                if (question.getId() == id) {
-                    result = question;
-                    break;
-                }
+        for (Question question : questions) {
+            if (question.getId() == id) {
+                result = question;
+                break;
             }
         }
         return result;
@@ -45,12 +53,11 @@ public class QuestionDaoFromFile implements QuestionDao {
 
     @Override
     public String getTestName() {
+        String actualFileName = fileNameGenerator.generateFileName();
+        if (!actualFileName.equals(fileName)) {
+            questions = createFromFile(actualFileName);
+        }
         return testName;
-    }
-
-    @Override
-    public void refresh() {
-        questions = createFromFile(fileNameGenerator.generateFileName());
     }
 
     private List<Question> createFromFile(String filename) {

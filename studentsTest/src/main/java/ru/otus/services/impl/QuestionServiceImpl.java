@@ -25,9 +25,4 @@ public class QuestionServiceImpl implements QuestionService {
     public String getCurrentTestName() {
         return questionDao.getTestName();
     }
-
-    @Override
-    public void refreshQuestionDao() {
-        questionDao.refresh();
-    }
 }

@@ -87,7 +87,6 @@ public class ApplicationStudentTest {
             messageService.setLocale(new Locale(locale));
             inputOutputService.out(getMessage("shell.language"));
             fileNameGenerator.setLocale(locale);
-            questionService.refreshQuestionDao();
         } else {
             inputOutputService.out(getMessage("shell.error"));
         }

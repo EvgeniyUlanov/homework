@@ -17,6 +17,4 @@ public interface QuestionService {
     List<Question> getAll();
 
     String getCurrentTestName();
-
-    void refreshQuestionDao();
 }
