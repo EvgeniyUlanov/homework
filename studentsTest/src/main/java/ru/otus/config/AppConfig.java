@@ -3,11 +3,8 @@ package ru.otus.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import ru.otus.dao.impl.QuestionDaoFromFile;
 import ru.otus.services.MessageService;
-import ru.otus.services.QuestionService;
 import ru.otus.services.impl.MessageServiceImpl;
-import ru.otus.services.impl.QuestionServiceImpl;
 import ru.otus.utils.FileNameGenerator;
 
 import java.util.Locale;
@@ -25,9 +22,7 @@ public class AppConfig {
     }
 
     @Bean
-    public QuestionService questionService(ApplicationProperties appProp) {
-        String file = FileNameGenerator
-                .generateFileName(appProp.getName(), appProp.getLocale(), appProp.getSuffix());
-        return new QuestionServiceImpl(new QuestionDaoFromFile(file));
+    public FileNameGenerator fileNameGenerator(ApplicationProperties appProp) {
+        return new FileNameGenerator(appProp.getName(), appProp.getLocale(), appProp.getSuffix());
     }
 }

@@ -1,22 +1,27 @@
 package ru.otus.dao.impl;
 
+import org.springframework.stereotype.Service;
 import ru.otus.dao.QuestionDao;
 import ru.otus.models.Question;
+import ru.otus.utils.FileNameGenerator;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Service
 public class QuestionDaoFromFile implements QuestionDao {
 
     private final static String LINE_SEPARATOR = "\", *\"";
     private final static String ANSWER_SEPARATOR = ", *";
     private List<Question> questions;
     private String testName;
+    private FileNameGenerator fileNameGenerator;
 
-    public QuestionDaoFromFile(String filename) {
-        questions = createFromFile(filename);
+    public QuestionDaoFromFile(FileNameGenerator fileNameGenerator) {
+        this.fileNameGenerator = fileNameGenerator;
+        questions = createFromFile(fileNameGenerator.generateFileName());
     }
 
     @Override
@@ -41,6 +46,11 @@ public class QuestionDaoFromFile implements QuestionDao {
     @Override
     public String getTestName() {
         return testName;
+    }
+
+    @Override
+    public void refresh() {
+        questions = createFromFile(fileNameGenerator.generateFileName());
     }
 
     private List<Question> createFromFile(String filename) {

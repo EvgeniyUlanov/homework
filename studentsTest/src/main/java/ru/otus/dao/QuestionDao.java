@@ -18,4 +18,6 @@ public interface QuestionDao {
     Question getById(int id);
 
     String getTestName();
+
+    void refresh();
 }

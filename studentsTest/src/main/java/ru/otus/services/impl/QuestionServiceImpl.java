@@ -1,11 +1,13 @@
 package ru.otus.services.impl;
 
+import org.springframework.stereotype.Service;
 import ru.otus.dao.QuestionDao;
 import ru.otus.models.Question;
 import ru.otus.services.QuestionService;
 
 import java.util.List;
 
+@Service
 public class QuestionServiceImpl implements QuestionService {
 
     private QuestionDao questionDao;
@@ -25,7 +27,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void setQuestionDao(QuestionDao questionDao) {
-        this.questionDao = questionDao;
+    public void refreshQuestionDao() {
+        questionDao.refresh();
     }
 }

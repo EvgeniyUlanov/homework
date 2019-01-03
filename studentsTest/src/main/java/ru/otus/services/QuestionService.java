@@ -18,5 +18,5 @@ public interface QuestionService {
 
     String getCurrentTestName();
 
-    void setQuestionDao(QuestionDao questionDao);
+    void refreshQuestionDao();
 }
