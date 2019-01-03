@@ -59,13 +59,9 @@ public class ShellCommands {
     }
 
     @ShellMethod("shows current student")
+    @ShellMethodAvailability("checkAuth")
     public void showCurrentStudent() {
-        Student student = studentService.getCurrentStudent();
-        if (student != null) {
-            inputOutputService.out(student.toString());
-        } else {
-            showMessage("shell.authorize.not");
-        }
+        inputOutputService.out(studentService.getCurrentStudent().toString());
     }
 
     @ShellMethod("change language, use 'ru' or 'en'")
@@ -74,7 +70,7 @@ public class ShellCommands {
             messageService.setLocale(new Locale(locale));
             showMessage("shell.language");
             String questionFileName = FileNameGenerator
-                    .generateFileName(appProp.getName(),locale, appProp.getSuffix());
+                    .generateFileName(appProp.getName(), locale, appProp.getSuffix());
             questionService.setQuestionDao(new QuestionDaoFromFile(questionFileName));
         } else {
             showMessage("shell.error");
@@ -82,22 +78,19 @@ public class ShellCommands {
     }
 
     @ShellMethod("show current student results")
+    @ShellMethodAvailability("checkAuth")
     public void showResults() {
         Student student = studentService.getCurrentStudent();
-        if (student != null) {
-            inputOutputService.out(student.toString());
-            if (student.getTestResults().size() > 0) {
-                for (TestResult testResult : student.getTestResults()) {
-                    inputOutputService.out(testResult.getName());
-                    inputOutputService.out(testResult.getRightAnswersCount()
-                            + " " + messageService.getMessage("test.score.from")
-                            + " " + testResult.answersCount());
-                }
-            } else {
-                showMessage("test.result.none");
+        inputOutputService.out(student.toString());
+        if (student.getTestResults().size() > 0) {
+            for (TestResult testResult : student.getTestResults()) {
+                inputOutputService.out(testResult.getName());
+                inputOutputService.out(testResult.getRightAnswersCount()
+                        + " " + messageService.getMessage("test.score.from")
+                        + " " + testResult.answersCount());
             }
         } else {
-            showMessage("shell.authorize.not");
+            showMessage("test.result.none");
         }
     }
 
