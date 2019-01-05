@@ -1,6 +1,7 @@
 package ru.otus.services;
 
 import java.io.InputStream;
+import java.io.PrintStream;
 
 /**
  * service uses for communicate with user
@@ -21,4 +22,6 @@ public interface InputOutputService {
     void out(String message);
 
     void setInput(InputStream stream);
+
+    void setOutput(PrintStream printStream);
 }

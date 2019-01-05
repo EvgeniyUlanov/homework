@@ -1,5 +1,6 @@
 package ru.otus.services;
 
+import ru.otus.dao.QuestionDao;
 import ru.otus.models.Question;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface QuestionService {
      * @return list of questions.
      */
     List<Question> getAll();
+
+    String getCurrentTestName();
 }

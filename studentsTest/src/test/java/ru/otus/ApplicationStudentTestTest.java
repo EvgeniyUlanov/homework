@@ -4,11 +4,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.shell.Shell;
+import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.otus.dao.StudentDao;
 import ru.otus.models.Student;
 import ru.otus.models.TestResult;
 import ru.otus.services.InputOutputService;
+import ru.otus.services.StudentService;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -19,7 +21,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(properties = {
+        InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false"
+})
 public class ApplicationStudentTestTest {
 
     @Autowired
@@ -27,17 +31,18 @@ public class ApplicationStudentTestTest {
     @Autowired
     private InputOutputService inputOutputService;
     @Autowired
-    private StudentDao studentDao;
+    private StudentService studentService;
 
     @Test
     public void test() {
-        String answers = "ivan\nivanov\nanswer1\nanswer2, answer3\ny";
+        Student student = studentService.findByNameOrCreate("ivan", "ivanov");
+        studentService.setCurrentStudent(student);
+        String answers = "answer1\nanswer2, answer3";
         InputStream inputStream = new ByteArrayInputStream(answers.getBytes());
         inputOutputService.setInput(inputStream);
         application.start();
-        Student student = studentDao.findByNameOrCreate("ivan", "ivanov");
         List<TestResult> testResults = student.getTestResults();
         assertThat(testResults.size(), is(1));
-        assertThat(testResults.get(0).getName(), equalTo("capitals of countries"));
+        assertThat(testResults.get(0).getName(), equalTo("test name"));
     }
 }

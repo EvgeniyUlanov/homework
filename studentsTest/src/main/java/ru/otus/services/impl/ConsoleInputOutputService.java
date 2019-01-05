@@ -1,6 +1,5 @@
 package ru.otus.services.impl;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import ru.otus.services.InputOutputService;
 
@@ -9,7 +8,6 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 @Service
-//@Profile(value = "dev")
 public class ConsoleInputOutputService implements InputOutputService {
 
     private Scanner scanner;
@@ -38,5 +36,10 @@ public class ConsoleInputOutputService implements InputOutputService {
     @Override
     public void setInput(InputStream stream) {
         scanner = new Scanner(stream);
+    }
+
+    @Override
+    public void setOutput(PrintStream printStream) {
+        this.printStream = printStream;
     }
 }

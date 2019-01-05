@@ -3,17 +3,14 @@ package ru.otus.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import ru.otus.dao.QuestionDao;
-import ru.otus.dao.impl.QuestionDaoFromFile;
 import ru.otus.services.MessageService;
 import ru.otus.services.impl.MessageServiceImpl;
+import ru.otus.utils.FileNameGenerator;
 
 import java.util.Locale;
 
 @Configuration
 public class AppConfig {
-
-    private final static String DEFAULT_LANGUAGE = "en";
 
     @Bean
     public MessageService messageService(ApplicationProperties appProp) {
@@ -25,13 +22,7 @@ public class AppConfig {
     }
 
     @Bean
-    public QuestionDao questionDao(ApplicationProperties appProp) {
-        String file;
-        if (!appProp.getLocale().equalsIgnoreCase(DEFAULT_LANGUAGE)) {
-            file = appProp.getName() + "_" + appProp.getLocale() + appProp.getSuffix();
-        } else {
-            file = appProp.getName() + appProp.getSuffix();
-        }
-        return new QuestionDaoFromFile(file);
+    public FileNameGenerator fileNameGenerator(ApplicationProperties appProp) {
+        return new FileNameGenerator(appProp.getName(), appProp.getLocale(), appProp.getSuffix());
     }
 }

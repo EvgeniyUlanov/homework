@@ -20,4 +20,9 @@ public class QuestionServiceImpl implements QuestionService {
     public List<Question> getAll() {
         return questionDao.getAll();
     }
+
+    @Override
+    public String getCurrentTestName() {
+        return questionDao.getTestName();
+    }
 }

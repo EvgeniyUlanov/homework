@@ -1,40 +1,63 @@
 package ru.otus.dao.impl;
 
+import org.springframework.stereotype.Service;
 import ru.otus.dao.QuestionDao;
 import ru.otus.models.Question;
+import ru.otus.utils.FileNameGenerator;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Service
 public class QuestionDaoFromFile implements QuestionDao {
 
     private final static String LINE_SEPARATOR = "\", *\"";
     private final static String ANSWER_SEPARATOR = ", *";
     private List<Question> questions;
+    private String testName;
+    private String fileName;
+    private FileNameGenerator fileNameGenerator;
 
-    public QuestionDaoFromFile(String filename) {
-        questions = createFromFile(filename);
+    public QuestionDaoFromFile(FileNameGenerator fileNameGenerator) {
+        this.fileNameGenerator = fileNameGenerator;
+        this.fileName = fileNameGenerator.generateFileName();
+        questions = createFromFile(fileName);
     }
 
     @Override
     public List<Question> getAll() {
+        String actualFileName = fileNameGenerator.generateFileName();
+        if (!actualFileName.equals(fileName)) {
+            questions = createFromFile(actualFileName);
+        }
         return questions;
     }
 
     @Override
     public Question getById(int id) {
+        String actualFileName = fileNameGenerator.generateFileName();
+        if (!actualFileName.equals(fileName)) {
+            questions = createFromFile(actualFileName);
+        }
         Question result = null;
-        if (questions != null) {
-            for (Question question : questions) {
-                if (question.getId() == id) {
-                    result = question;
-                    break;
-                }
+        for (Question question : questions) {
+            if (question.getId() == id) {
+                result = question;
+                break;
             }
         }
         return result;
+    }
+
+    @Override
+    public String getTestName() {
+        String actualFileName = fileNameGenerator.generateFileName();
+        if (!actualFileName.equals(fileName)) {
+            questions = createFromFile(actualFileName);
+        }
+        return testName;
     }
 
     private List<Question> createFromFile(String filename) {
@@ -44,10 +67,14 @@ public class QuestionDaoFromFile implements QuestionDao {
                      new BufferedReader(
                              new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filename))
                      )) {
-            while ((line = br.readLine()) != null) {
-                String[] rowStrings = line.split(LINE_SEPARATOR);
-                if(rowStrings.length >= 3) {
-                    result.add(prepareQuestion(rowStrings));
+            line = br.readLine();
+            if (line != null && line.contains("Test name:")) {
+                this.testName = line.replaceFirst("Test name:", "").trim();
+                while ((line = br.readLine()) != null) {
+                    String[] rowStrings = line.split(LINE_SEPARATOR);
+                    if (rowStrings.length >= 3) {
+                        result.add(prepareQuestion(rowStrings));
+                    }
                 }
             }
         } catch (Exception e) {
