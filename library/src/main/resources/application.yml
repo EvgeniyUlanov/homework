@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: dev
+  data:
+    database: library
+    host: localhost
+  datasource:
+    username: postgres
+    password: 784512963
+    url: jdbc:postgresql://localhost:5432/library
+    driver-class-name: org.postgresql.Driver
