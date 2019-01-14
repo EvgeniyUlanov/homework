@@ -2,22 +2,20 @@ package ru.otus.models;
 
 public class Book {
 
-    private Integer id;
+    private long id;
     private String name;
-    private String isbn;
     private Genre genre;
-    private Author author;
 
-    public Book(Genre genre, Author author) {
+    public Book(Genre genre, String name) {
         this.genre = genre;
-        this.author = author;
+        this.name = name;
     }
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -29,14 +27,6 @@ public class Book {
         this.name = name;
     }
 
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
     public Genre getGenre() {
         return genre;
     }
@@ -45,11 +35,12 @@ public class Book {
         this.genre = genre;
     }
 
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", genre=" + genre +
+                '}';
     }
 }

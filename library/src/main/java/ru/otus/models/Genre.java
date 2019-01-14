@@ -2,18 +2,18 @@ package ru.otus.models;
 
 public class Genre {
 
-    private int id;
+    private long id;
     private String name;
 
     public Genre(String name) {
         this.name = name;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -23,5 +23,10 @@ public class Genre {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
