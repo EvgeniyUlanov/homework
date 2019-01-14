@@ -36,11 +36,6 @@ public class BookShellCommands {
         bookService.showBookByGenre(genreName);
     }
 
-    @ShellMethod("show book by author - example: show-book-author authorName")
-    public void showBookAuthor(@ShellOption String authorName) {
-        bookService.showBookByAuthor(authorName);
-    }
-
     @ShellMethod("add book, example: add-book 'book name' genreName baseAuthorName," +
             " to add another author use command add-author-to-book")
     public void addBook(@ShellOption String bookName, @ShellOption String genre, @ShellOption String author) {

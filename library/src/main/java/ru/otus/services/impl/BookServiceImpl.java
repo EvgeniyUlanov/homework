@@ -68,17 +68,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void showBookByAuthor(String author) {
-        Author foundedAuthor = authorDao.getByName(author);
-        if (foundedAuthor != null) {
-            List<Book> bookList = bookDao.getByAuthor(foundedAuthor);
-            printBookList(bookList);
-        } else {
-            inputOutputService.out("author is not found");
-        }
-    }
-
-    @Override
     public void addBook(String bookName, String genre, String authorName) {
         Genre foundedGenre = genreDao.getByName(genre);
         Author foundedAuthor = authorDao.getByName(authorName);

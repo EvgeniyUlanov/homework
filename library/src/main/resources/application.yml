@@ -1,9 +1,6 @@
 spring:
   profiles:
     active: dev
-  data:
-    database: library
-    host: localhost
   datasource:
     username: postgres
     password: 784512963

@@ -98,7 +98,14 @@ public class JdbcBookDao implements BookDao {
 
     @Override
     public void update(Book book) {
-
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("id", book.getId());
+        params.put("book_name", book.getName());
+        params.put("genre_id", book.getGenre().getId());
+        jdbcOperations.update(
+                "UPDATE books AS b SET b.book_name =:book_name, b.genre_id = :genre_id WHERE id = :id",
+                params
+        );
     }
 
     @Override
