@@ -1,6 +1,7 @@
 package ru.otus.dao;
 
 import ru.otus.models.Author;
+import ru.otus.models.Book;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface AuthorDao {
     void delete(long id);
     
     Author getByName(String lastName);
+
+    void addBookToAuthor(Author author, Book book);
 }

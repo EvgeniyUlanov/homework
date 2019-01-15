@@ -3,6 +3,8 @@ INSERT INTO authors(author_name) VALUES ('Lev Tolstoy');
 INSERT INTO authors(author_name) VALUES ('Aleksandr Pushkin');
 INSERT INTO authors(author_name) VALUES ('Ilya Ilf');
 INSERT INTO authors(author_name) VALUES ('Evgeniy Petrov');
+INSERT INTO authors(author_name) VALUES ('testAuthor');
+
 
 INSERT INTO genres(genre_name) VALUES ('Comedy');
 INSERT INTO genres(genre_name) VALUES ('Drama');
@@ -22,6 +24,12 @@ INSERT INTO books(book_name, genre_id)
   VALUES ('12 chairs', (SELECT id FROM genres WHERE genre_name = 'Comedy'));
 INSERT INTO books(book_name, genre_id)
   VALUES ('Golden calf', (SELECT id FROM genres WHERE genre_name = 'Comedy'));
+INSERT INTO books(book_name, genre_id)
+  VALUES ('testBook1', (SELECT id FROM genres WHERE genre_name = 'Drama'));
+INSERT INTO books(book_name, genre_id)
+  VALUES ('testBook2', (SELECT id FROM genres WHERE genre_name = 'Comedy'));
+INSERT INTO books(book_name, genre_id)
+  VALUES ('testBook3', (SELECT id FROM genres WHERE genre_name = 'Comedy'));
 
 INSERT INTO authors_books(author_id, book_id) VALUES (
   (SELECT id FROM authors WHERE author_name = 'Jack London'),
@@ -58,4 +66,12 @@ INSERT INTO authors_books(author_id, book_id) VALUES (
 INSERT INTO authors_books(author_id, book_id) VALUES (
   (SELECT id FROM authors WHERE author_name = 'Evgeniy Petrov'),
   (SELECT id FROM books WHERE book_name = 'Golden calf')
+);
+INSERT INTO authors_books(author_id, book_id) VALUES (
+  (SELECT id FROM authors WHERE author_name = 'testAuthor'),
+  (SELECT id FROM books WHERE book_name = 'testBook1')
+);
+INSERT INTO authors_books(author_id, book_id) VALUES (
+  (SELECT id FROM authors WHERE author_name = 'testAuthor'),
+  (SELECT id FROM books WHERE book_name = 'testBook2')
 );

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.otus.dao.AuthorDao;
 import ru.otus.dao.BookDao;
 import ru.otus.models.Author;
+import ru.otus.models.Book;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -67,7 +68,19 @@ public class JdbcAuthorDao implements AuthorDao {
     public Author getByName(String name) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("name", name);
-        return jdbcOperations.query("SELECT ", params, new AuthorMapper()).stream().findFirst().get();
+        return jdbcOperations.query(
+                "SELECT id, author_name FROM authors WHERE author_name = :name",
+                params,
+                new AuthorMapper()
+        ).stream().findFirst().get();
+    }
+
+    @Override
+    public void addBookToAuthor(Author author, Book book) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("author_id", author.getId());
+        params.put("book_id", book.getId());
+        jdbcOperations.update("INSERT INTO authors_books (author_id, book_id) VALUES (:author_id, :book_id)", params);
     }
 
     private class AuthorMapper implements RowMapper<Author> {

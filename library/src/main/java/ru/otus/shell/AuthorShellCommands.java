@@ -18,7 +18,7 @@ public class AuthorShellCommands {
 
     @ShellMethod("shows all authors")
     public void showAllAuthors() {
-
+        authorService.showAllAuthors();
     }
 
     @ShellMethod("shows author's books")
@@ -29,5 +29,10 @@ public class AuthorShellCommands {
     @ShellMethod("add new author")
     public void addAuthor(@ShellOption String authorName) {
         authorService.addAuthor(authorName);
+    }
+
+    @ShellMethod("add book to author")
+    public void addBookToAuthor(@ShellOption String authorName, @ShellOption String bookName) {
+        authorService.addBookToAuthor(authorName, bookName);
     }
 }

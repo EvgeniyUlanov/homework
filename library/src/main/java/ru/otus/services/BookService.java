@@ -11,6 +11,4 @@ public interface BookService {
     void showBookByGenre(String genre);
 
     void addBook(String bookName, String genre, String authorName);
-
-    void addAuthorToBook(String authorName, String bookName);
 }

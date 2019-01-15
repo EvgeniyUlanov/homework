@@ -1,12 +1,13 @@
 package ru.otus.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Author {
 
     private long id;
     private String name;
-    private List<Book> books;
+    private List<Book> books = new ArrayList<>();
 
     public Author(String name) {
         this.name = name;

@@ -23,5 +23,5 @@ public interface BookDao {
 
     void delete(long id);
 
-    void addAuthorToBook(Author foundedAuthor, Book book);
+
 }

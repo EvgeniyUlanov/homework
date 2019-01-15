@@ -31,7 +31,7 @@ public class JdbcBookDao implements BookDao {
                 "INSERT INTO books (book_name, genre_id) " +
                         "VALUES (" +
                         ":book_name, " +
-                        "(SELECT genre_id FROM genres where genre_name =:genre))",
+                        "(SELECT id FROM genres where genre_name =:genre))",
                 params);
     }
 
@@ -113,14 +113,6 @@ public class JdbcBookDao implements BookDao {
         HashMap<String, Object> params = new HashMap<>();
         params.put("id", id);
         jdbcOperations.update("DELETE FROM books where id = :id", params);
-    }
-
-    @Override
-    public void addAuthorToBook(Author foundedAuthor, Book book) {
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("author_id", foundedAuthor.getId());
-        params.put("book_id", book.getId());
-        jdbcOperations.update("INSERT INTO authors_books (author_id, book_id) VALUES (:author_id, :book_id)", params);
     }
 
     private class BookMapper implements RowMapper<Book> {

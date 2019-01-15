@@ -74,20 +74,13 @@ public class BookServiceImpl implements BookService {
         if (foundedGenre != null && foundedAuthor != null) {
             Book book = new Book(foundedGenre, bookName);
             bookDao.save(book);
-            bookDao.addAuthorToBook(foundedAuthor, book);
+            authorDao.addBookToAuthor(foundedAuthor, book);
         } else {
             inputOutputService.out("wrong genre or author");
         }
     }
 
-    @Override
-    public void addAuthorToBook(String authorName, String bookName) {
-        Author author = authorDao.getByName(authorName);
-        Book book = bookDao.getByName(bookName);
-        if (author != null && book != null) {
-            bookDao.addAuthorToBook(author, book);
-        }
-    }
+
 
     private void printBookList(List<Book> bookList) {
         for (Book book : bookList) {

@@ -16,14 +16,9 @@ public class BookShellCommands {
         this.bookService = bookService;
     }
 
-    @ShellMethod("shows book list by name")
+    @ShellMethod("shows book by name")
     public void showBookName(@ShellOption String bookName) {
         bookService.showBookByName(bookName);
-    }
-
-    @ShellMethod("shows book by id")
-    public void showBookId(@ShellOption Long id) {
-        bookService.showBookById(id);
     }
 
     @ShellMethod("shows all books")
@@ -40,10 +35,5 @@ public class BookShellCommands {
             " to add another author use command add-author-to-book")
     public void addBook(@ShellOption String bookName, @ShellOption String genre, @ShellOption String author) {
         bookService.addBook(bookName, genre, author);
-    }
-
-    @ShellMethod("add author to book")
-    public void addAuthorToBook(@ShellOption String authorName, @ShellOption String bookName) {
-        bookService.addAuthorToBook(authorName, bookName);
     }
 }
