@@ -53,7 +53,7 @@ public class JdbcGenreDao implements GenreDao {
     public void deleteGenre(long id) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("genre_id", id);
-        jdbcOperations.update("DELETE FROM genres WHERE id = :genre_name", params);
+        jdbcOperations.update("DELETE FROM genres WHERE id = :genre_id", params);
     }
 
     @Override

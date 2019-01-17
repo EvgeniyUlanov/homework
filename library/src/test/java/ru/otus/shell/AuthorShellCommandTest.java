@@ -1,6 +1,6 @@
 package ru.otus.shell;
 
-import org.junit.Before;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +12,13 @@ import ru.otus.dao.AuthorDao;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
 import ru.otus.models.Genre;
-import ru.otus.services.InputOutputService;
 
-import java.io.PrintStream;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
@@ -32,38 +30,32 @@ public class AuthorShellCommandTest {
     private Shell shell;
     @Autowired
     private AuthorDao authorDao;
-    @Autowired
-    private InputOutputService inputOutputService;
-    private PrintStream printStream;
-
-    @Before
-    public void initMock() {
-        printStream = mock(PrintStream.class);
-        inputOutputService.setOutput(printStream);
-    }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testShowAllAuthors() {
-        shell.evaluate(() -> "show-all-authors");
-        verify(printStream).println("Jack London");
-        verify(printStream).println("Lev Tolstoy");
-        verify(printStream).println("Aleksandr Pushkin");
-        verify(printStream).println("Ilya Ilf");
-        verify(printStream).println("Evgeniy Petrov");
+        List<String> response = (List<String>) shell.evaluate(() -> "show-all-authors");
+        assertThat(response, Matchers.contains("testAuthor"));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void showAuthorBooksTest() {
-        shell.evaluate(() -> "show-author-books testAuthor");
-        verify(printStream).println("Book{name='testBook1', genre=Drama}");
-        verify(printStream).println("Book{name='testBook2', genre=Drama}");
+        List<String> response = (List<String>) shell.evaluate(() -> "show-author-books testAuthor");
+        assertThat(
+                response,
+                Matchers.containsInAnyOrder(
+                        "Book{name='testBook1', genre=Drama}",
+                        "Book{name='testBook2', genre=Comedy}")
+        );
     }
 
     @Test
     public void addAuthorTest() {
         shell.evaluate(() -> "add-author newAuthor");
         Author author = authorDao.getByName("newAuthor");
-        assertThat(author, is(notNullValue()));
+        assertThat(author, notNullValue());
+        authorDao.delete(author.getId());
     }
 
     @Test
@@ -73,7 +65,7 @@ public class AuthorShellCommandTest {
                 .stream().filter(e -> e.getName().equals("testBook3"))
                 .findFirst()
                 .orElse(null);
-        assertThat(book, is(nullValue()));
+        assertThat(book, nullValue());
         shell.evaluate(() -> "add-book-to-author testAuthor testBook3");
         author = authorDao.getByName("testAuthor");
         book = author.getBooks()

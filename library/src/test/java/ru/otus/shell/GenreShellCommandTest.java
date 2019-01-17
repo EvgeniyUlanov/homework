@@ -1,6 +1,5 @@
 package ru.otus.shell;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +9,12 @@ import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.dao.GenreDao;
 import ru.otus.models.Genre;
-import ru.otus.services.InputOutputService;
 
-import java.io.PrintStream;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
@@ -30,29 +26,20 @@ public class GenreShellCommandTest {
     private Shell shell;
     @Autowired
     private GenreDao genreDao;
-    @Autowired
-    private InputOutputService inputOutputService;
-    private PrintStream printStream;
-
-    @Before
-    public void initMock() {
-        printStream = mock(PrintStream.class);
-        inputOutputService.setOutput(printStream);
-    }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testShowAllGenres() {
-        Object message = shell.evaluate(() -> "show-genres");
-        System.out.println(message.toString());
-//        verify(printStream).println("Drama");
-//        verify(printStream).println("Comedy");
-//        verify(printStream).println("Poem");
+        List<String> response = (List<String>)  shell.evaluate(() -> "show-genres");
+        assertThat(response, containsInAnyOrder("Drama", "Comedy", "Poem"));
+        System.out.println(response.toString());
     }
 
     @Test
     public void testAddGenre() {
         shell.evaluate(() -> "add-genre newGenre");
         Genre genre = genreDao.getByName("newGenre");
-        assertThat(genre, is(notNullValue()));
+        assertThat(genre, notNullValue());
+        genreDao.deleteGenre(genre.getId());
     }
 }
