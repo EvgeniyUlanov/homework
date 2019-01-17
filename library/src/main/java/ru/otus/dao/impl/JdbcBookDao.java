@@ -1,8 +1,10 @@
 package ru.otus.dao.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
+import ru.otus.dao.AuthorDao;
 import ru.otus.dao.BookDao;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
@@ -49,7 +51,7 @@ public class JdbcBookDao implements BookDao {
     public List<Book> getAll() {
         return jdbcOperations.query(
                 "SELECT b.id, g.genre_name, b.genre_id, b.book_name FROM books AS b " +
-                "INNER JOIN genres AS g ON g.id = b.genre_id",
+                        "INNER JOIN genres AS g ON g.id = b.genre_id",
                 new BookMapper()
         );
     }
@@ -115,6 +117,22 @@ public class JdbcBookDao implements BookDao {
         jdbcOperations.update("DELETE FROM books where id = :id", params);
     }
 
+    private List<Author> getAuthorListForBook(Book book) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("book_id", book.getId());
+        return jdbcOperations.query(
+                "SELECT a.author_name, a.id FROM authors AS a " +
+                        "INNER JOIN authors_books AS ab ON a.id = ab.author_id " +
+                        "WHERE ab.book_id = :book_id",
+                params,
+                (rs, rowNum) -> {
+                    Author author = new Author(rs.getString("author_name"));
+                    author.setId(rs.getLong("id"));
+                    return author;
+                }
+        );
+    }
+
     private class BookMapper implements RowMapper<Book> {
         @Override
         public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -122,6 +140,7 @@ public class JdbcBookDao implements BookDao {
             genre.setId(rs.getLong("genre_id"));
             Book book = new Book(genre, rs.getString("book_name"));
             book.setId(rs.getLong("id"));
+            book.setAuthors(getAuthorListForBook(book));
             return book;
         }
     }

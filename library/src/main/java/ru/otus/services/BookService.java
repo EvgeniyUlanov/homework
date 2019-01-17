@@ -1,14 +1,16 @@
 package ru.otus.services;
 
+import java.util.List;
+
 public interface BookService {
 
-    void showBookByName(String bookName);
+    String showBookByName(String bookName);
 
-    void showBookById(Long id);
+    String showBookById(Long id);
 
-    void showAllBooks();
+    List<String> showAllBooks();
 
-    void showBookByGenre(String genre);
+    List<String> showBookByGenre(String genre);
 
-    void addBook(String bookName, String genre, String authorName);
+    String addBook(String bookName, String genre, String authorName);
 }

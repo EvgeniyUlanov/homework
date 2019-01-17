@@ -20,4 +20,6 @@ public interface AuthorDao {
     Author getByName(String lastName);
 
     void addBookToAuthor(Author author, Book book);
+
+    List<Author> getByBook(Book book);
 }

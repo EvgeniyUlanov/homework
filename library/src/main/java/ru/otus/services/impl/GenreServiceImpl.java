@@ -4,27 +4,27 @@ import org.springframework.stereotype.Service;
 import ru.otus.dao.GenreDao;
 import ru.otus.models.Genre;
 import ru.otus.services.GenreService;
-import ru.otus.services.InputOutputService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class GenreServiceImpl implements GenreService {
 
     private GenreDao genreDao;
-    private InputOutputService inputOutputService;
 
-    public GenreServiceImpl(GenreDao genreDao, InputOutputService inputOutputService) {
+    public GenreServiceImpl(GenreDao genreDao) {
         this.genreDao = genreDao;
-        this.inputOutputService = inputOutputService;
     }
 
     @Override
-    public void showAllGenres() {
+    public List<String> showAllGenres() {
         List<Genre> genreList = genreDao.getAll();
+        List<String> genreNameList = new ArrayList<>();
         for (Genre genre : genreList) {
-            inputOutputService.out(genre.getName());
+            genreNameList.add(genre.getName());
         }
+        return genreNameList;
     }
 
     @Override

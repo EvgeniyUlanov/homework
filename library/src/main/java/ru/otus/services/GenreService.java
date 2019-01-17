@@ -1,8 +1,10 @@
 package ru.otus.services;
 
+import java.util.List;
+
 public interface GenreService {
 
-    void showAllGenres();
+    List<String> showAllGenres();
 
     void addGenre(String genreName);
 }

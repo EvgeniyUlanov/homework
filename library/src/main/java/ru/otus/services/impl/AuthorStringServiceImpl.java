@@ -5,30 +5,30 @@ import ru.otus.dao.AuthorDao;
 import ru.otus.dao.BookDao;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
-import ru.otus.services.AuthorService;
-import ru.otus.services.InputOutputService;
+import ru.otus.services.AuthorStringService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class AuthorServiceImpl implements AuthorService {
+public class AuthorStringServiceImpl implements AuthorStringService {
 
     private AuthorDao authorDao;
-    private InputOutputService inputOutputService;
     private BookDao bookDao;
 
-    public AuthorServiceImpl(AuthorDao authorDao, InputOutputService inputOutputService, BookDao bookDao) {
+    public AuthorStringServiceImpl(AuthorDao authorDao, BookDao bookDao) {
         this.authorDao = authorDao;
-        this.inputOutputService = inputOutputService;
         this.bookDao = bookDao;
     }
 
     @Override
-    public void showAuthorBooks(String authorName) {
+    public List<String> showAuthorBooks(String authorName) {
         Author author = authorDao.getByName(authorName);
+        List<String> bookAsStringList = new ArrayList<>();
         for (Book book : author.getBooks()) {
-            inputOutputService.out(book.toString());
+            bookAsStringList.add(book.toString());
         }
+        return bookAsStringList;
     }
 
     @Override
@@ -37,11 +37,13 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void showAllAuthors() {
+    public List<String> showAllAuthors() {
         List<Author> authors = authorDao.getAll();
+        List<String> authorNameList = new ArrayList<>();
         for (Author author : authors) {
-            inputOutputService.out(author.getName());
+            authorNameList.add(author.getName());
         }
+        return authorNameList;
     }
 
     @Override

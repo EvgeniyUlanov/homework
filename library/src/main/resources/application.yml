@@ -6,3 +6,5 @@ spring:
     password: 784512963
     url: jdbc:postgresql://localhost:5432/library
     driver-class-name: org.postgresql.Driver
+    initialization-mode: always
+    schema: schema/schema.sql, schema/data.sql

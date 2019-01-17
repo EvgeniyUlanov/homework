@@ -1,10 +1,13 @@
 package ru.otus.models;
 
+import java.util.List;
+
 public class Book {
 
     private long id;
     private String name;
     private Genre genre;
+    private List<Author> authors;
 
     public Book(Genre genre, String name) {
         this.genre = genre;
@@ -33,6 +36,14 @@ public class Book {
 
     public void setGenre(Genre genre) {
         this.genre = genre;
+    }
+
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
     }
 
     @Override
