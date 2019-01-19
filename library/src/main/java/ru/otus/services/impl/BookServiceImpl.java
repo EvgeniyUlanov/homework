@@ -62,6 +62,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<String> showBookByAuthor(String authorName) {
+        Author author = authorDao.getByName(authorName);
+        List<Book> bookList = bookDao.getByAuthor(author);
+        List<String> bookListAsStrings = new ArrayList<>();
+        for (Book book : bookList) {
+            bookListAsStrings.add(book.toString());
+        }
+        return bookListAsStrings;
+    }
+
+    @Override
     public String addBook(String bookName, String genre, String authorName) {
         Genre foundedGenre = genreDao.getByName(genre);
         Author foundedAuthor = authorDao.getByName(authorName);
@@ -69,6 +80,7 @@ public class BookServiceImpl implements BookService {
         if (foundedGenre != null && foundedAuthor != null) {
             Book book = new Book(foundedGenre, bookName);
             bookDao.save(book);
+            book = bookDao.getByName(bookName);
             authorDao.addBookToAuthor(foundedAuthor, book);
             message = "added the book";
         }

@@ -64,4 +64,16 @@ public class BookShellCommandsTest {
         assertThat(book, is(Matchers.notNullValue()));
         bookDao.delete(book.getId());
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void showAuthorBooksTest() {
+        List<String> response = (List<String>) shell.evaluate(() -> "show-books-by-author testAuthor");
+        assertThat(
+                response,
+                Matchers.containsInAnyOrder(
+                        "Book{name='testBook1', genre=Drama}",
+                        "Book{name='testBook2', genre=Comedy}")
+        );
+    }
 }

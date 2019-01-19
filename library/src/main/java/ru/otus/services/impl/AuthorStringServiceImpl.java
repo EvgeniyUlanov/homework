@@ -22,16 +22,6 @@ public class AuthorStringServiceImpl implements AuthorStringService {
     }
 
     @Override
-    public List<String> showAuthorBooks(String authorName) {
-        Author author = authorDao.getByName(authorName);
-        List<String> bookAsStringList = new ArrayList<>();
-        for (Book book : author.getBooks()) {
-            bookAsStringList.add(book.toString());
-        }
-        return bookAsStringList;
-    }
-
-    @Override
     public void addAuthor(String authorName) {
         authorDao.save(new Author(authorName));
     }

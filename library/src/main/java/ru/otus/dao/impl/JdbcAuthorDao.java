@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import ru.otus.dao.AuthorDao;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
-import ru.otus.models.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,20 +32,16 @@ public class JdbcAuthorDao implements AuthorDao {
     public Author getById(long id) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("id", id);
-        Author author = jdbcOperations.query(
+        return jdbcOperations.queryForObject(
                 "SELECT author_id, author_name FROM authors where author_id = :id",
                 params,
                 new AuthorMapper()
-        ).stream().findFirst().get();
-        author.setBooks(getAuthorBooks(author));
-        return author;
+        );
     }
 
     @Override
     public List<Author> getAll() {
-        List<Author> authors = jdbcOperations.query("select * from authors", new AuthorMapper());
-        authors.forEach(e -> e.setBooks(getAuthorBooks(e)));
-        return authors;
+        return jdbcOperations.query("select * from authors", new AuthorMapper());
     }
 
     @Override
@@ -68,13 +63,11 @@ public class JdbcAuthorDao implements AuthorDao {
     public Author getByName(String name) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("author_name", name);
-        Author author = jdbcOperations.query(
+        return jdbcOperations.queryForObject(
                 "SELECT author_id, author_name FROM authors WHERE author_name = :author_name",
                 params,
                 new AuthorMapper()
-        ).stream().findFirst().get();
-        author.setBooks(getAuthorBooks(author));
-        return author;
+        );
     }
 
     @Override
@@ -82,41 +75,10 @@ public class JdbcAuthorDao implements AuthorDao {
         HashMap<String, Object> params = new HashMap<>();
         params.put("author_id", author.getId());
         params.put("book_id", book.getId());
-        jdbcOperations.update("INSERT INTO authors_books (author_id, book_id) VALUES (:author_id, :book_id)", params);
-    }
-
-    @Override
-    public List<Author> getByBook(Book book) {
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("book_id", book.getId());
-        List<Author> authorList = jdbcOperations.query(
-                "SELECT a.author_name, a.author_id FROM authors AS a " +
-                        "INNER JOIN authors_books ab ON a.author_id = ab.author_id " +
-                        "WHERE ab.book_id = :book_id",
-                params,
-                new AuthorMapper()
+        jdbcOperations.update(
+                "INSERT INTO authors_books (author_id, book_id) VALUES (:author_id, :book_id)",
+                params
         );
-        authorList.forEach(e -> e.setBooks(getAuthorBooks(e)));
-        return authorList;
-    }
-
-    private List<Book> getAuthorBooks(Author author) {
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("author_id", author.getId());
-        return jdbcOperations.query(
-                "SELECT b.book_id, g.genre_name, b.genre_id, b.book_name " +
-                        "FROM books b " +
-                        "INNER JOIN genres AS g ON b.genre_id = g.genre_id " +
-                        "INNER JOIN authors_books AS ab ON ab.book_id = b.book_id " +
-                        "WHERE ab.author_id = :author_id",
-                params,
-                (rs, rowNum) -> {
-                    Genre genre = new Genre(rs.getString("genre_name"));
-                    genre.setId(rs.getLong("genre_id"));
-                    Book book = new Book(genre, rs.getString("book_name"));
-                    book.setId(rs.getLong("book_id"));
-                    return book;
-                });
     }
 
     private class AuthorMapper implements RowMapper<Author> {

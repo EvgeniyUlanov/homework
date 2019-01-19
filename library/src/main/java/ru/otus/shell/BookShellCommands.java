@@ -28,9 +28,14 @@ public class BookShellCommands {
         return bookService.showAllBooks();
     }
 
-    @ShellMethod("shows book list by genre")
+    @ShellMethod("shows books by genre")
     public List<String> showBookByGenre(@ShellOption String genreName) {
        return bookService.showBookByGenre(genreName);
+    }
+
+    @ShellMethod("shows books by author")
+    public List<String> showBooksByAuthor(@ShellOption String authorName) {
+        return bookService.showBookByAuthor(authorName);
     }
 
     @ShellMethod("add book, example: add-book 'book name' genreName baseAuthorName," +

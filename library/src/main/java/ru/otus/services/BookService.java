@@ -13,4 +13,6 @@ public interface BookService {
     List<String> showBookByGenre(String genre);
 
     String addBook(String bookName, String genre, String authorName);
+
+    List<String> showBookByAuthor(String authorName);
 }

@@ -23,11 +23,6 @@ public class AuthorShellCommands {
         return authorStringService.showAllAuthors();
     }
 
-    @ShellMethod("shows author's books")
-    public List<String> showAuthorBooks(@ShellOption String authorName) {
-        return authorStringService.showAuthorBooks(authorName);
-    }
-
     @ShellMethod("add new author")
     public void addAuthor(@ShellOption String authorName) {
         authorStringService.addAuthor(authorName);
