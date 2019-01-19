@@ -48,7 +48,7 @@ public class BookShellCommandsTest {
     @Test
     @SuppressWarnings("unchecked")
     public void showBookGenreTest() {
-        List<String> response = (List<String>) shell.evaluate(() -> "show-book-by-genre Comedy");
+        List<String> response = (List<String>) shell.evaluate(() -> "show-books-by-genre Comedy");
         assertThat(
                 response,
                 Matchers.containsInAnyOrder(

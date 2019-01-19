@@ -5,7 +5,6 @@ import ru.otus.dao.GenreDao;
 import ru.otus.models.Genre;
 import ru.otus.services.GenreService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,13 +17,8 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public List<String> showAllGenres() {
-        List<Genre> genreList = genreDao.getAll();
-        List<String> genreNameList = new ArrayList<>();
-        for (Genre genre : genreList) {
-            genreNameList.add(genre.getName());
-        }
-        return genreNameList;
+    public List<Genre> getAllGenres() {
+        return genreDao.getAll();
     }
 
     @Override

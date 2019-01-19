@@ -26,64 +26,40 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String showBookByName(String bookName) {
-        Book book = bookDao.getByName(bookName);
-        return book != null ? book.toString() : "cannot find book with name: " + bookName;
+    public Book getBookByName(String bookName) {
+        return bookDao.getByName(bookName);
     }
 
     @Override
-    public String showBookById(Long id) {
-        Book book = bookDao.getById(id);
-        return book != null ? book.toString() : "cannot find book with id: " + id;
+    public Book getBookById(Long id) {
+        return bookDao.getById(id);
     }
 
     @Override
-    public List<String> showAllBooks() {
-        List<Book> bookList = bookDao.getAll();
-        List<String> bookToStringList = new ArrayList<>();
-        if (bookList != null) {
-            for (Book book : bookList) {
-                bookToStringList.add(book.toString());
-            }
-        }
-        return bookToStringList;
+    public List<Book> getAllBooks() {
+        return bookDao.getAll();
     }
 
     @Override
-    public List<String> showBookByGenre(String genre) {
-        List<Book> bookList = bookDao.getByGenre(genre);
-        List<String> bookToStringList = new ArrayList<>();
-        if (bookList != null) {
-            for (Book book : bookList) {
-                bookToStringList.add(book.toString());
-            }
-        }
-        return bookToStringList;
+    public List<Book> getBookByGenre(String genre) {
+        return bookDao.getByGenre(genre);
     }
 
     @Override
-    public List<String> showBookByAuthor(String authorName) {
+    public List<Book> getBookByAuthor(String authorName) {
         Author author = authorDao.getByName(authorName);
-        List<Book> bookList = bookDao.getByAuthor(author);
-        List<String> bookListAsStrings = new ArrayList<>();
-        for (Book book : bookList) {
-            bookListAsStrings.add(book.toString());
-        }
-        return bookListAsStrings;
+        return bookDao.getByAuthor(author);
     }
 
     @Override
-    public String addBook(String bookName, String genre, String authorName) {
+    public void addBook(String bookName, String genre, String authorName) {
         Genre foundedGenre = genreDao.getByName(genre);
         Author foundedAuthor = authorDao.getByName(authorName);
-        String message = null;
         if (foundedGenre != null && foundedAuthor != null) {
             Book book = new Book(foundedGenre, bookName);
             bookDao.save(book);
             book = bookDao.getByName(bookName);
             authorDao.addBookToAuthor(foundedAuthor, book);
-            message = "added the book";
         }
-        return message != null ? message : "wrong genre or author name";
     }
 }

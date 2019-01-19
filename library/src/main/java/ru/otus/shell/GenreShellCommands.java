@@ -5,6 +5,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.services.GenreService;
+import ru.otus.services.StringService;
 
 import java.util.List;
 
@@ -12,15 +13,17 @@ import java.util.List;
 @ShellCommandGroup("genres")
 public class GenreShellCommands {
 
+    private StringService stringService;
     private GenreService genreService;
 
-    public GenreShellCommands(GenreService genreService) {
+    public GenreShellCommands(StringService stringService, GenreService genreService) {
+        this.stringService = stringService;
         this.genreService = genreService;
     }
 
     @ShellMethod("shows all genres that exist in library")
     public List<String> showAllGenres() {
-        return genreService.showAllGenres();
+        return stringService.AllGenresToString();
     }
 
     @ShellMethod("add new genre with name genreName - 'add-genre genreName'")
