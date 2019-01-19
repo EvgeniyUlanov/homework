@@ -17,7 +17,7 @@ public interface AuthorDao {
 
     void delete(long id);
     
-    Author getByName(String lastName);
+    Author getByName(String name);
 
     void addBookToAuthor(Author author, Book book);
 }

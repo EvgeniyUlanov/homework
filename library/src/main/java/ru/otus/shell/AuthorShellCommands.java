@@ -4,6 +4,7 @@ import org.springframework.shell.standard.ShellCommandGroup;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import ru.otus.services.AuthorService;
 import ru.otus.services.AuthorStringService;
 
 import java.util.List;
@@ -13,9 +14,11 @@ import java.util.List;
 public class AuthorShellCommands {
 
     private AuthorStringService authorStringService;
+    private AuthorService authorService;
 
-    public AuthorShellCommands(AuthorStringService authorStringService) {
+    public AuthorShellCommands(AuthorStringService authorStringService, AuthorService authorService) {
         this.authorStringService = authorStringService;
+        this.authorService = authorService;
     }
 
     @ShellMethod("shows all authors")
@@ -25,11 +28,11 @@ public class AuthorShellCommands {
 
     @ShellMethod("add new author")
     public void addAuthor(@ShellOption String authorName) {
-        authorStringService.addAuthor(authorName);
+        authorService.addAuthor(authorName);
     }
 
     @ShellMethod("add book to author")
     public void addBookToAuthor(@ShellOption String authorName, @ShellOption String bookName) {
-        authorStringService.addBookToAuthor(authorName, bookName);
+        authorService.addBookToAuthor(authorName, bookName);
     }
 }
