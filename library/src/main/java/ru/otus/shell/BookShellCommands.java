@@ -19,17 +19,17 @@ public class BookShellCommands {
     }
 
     @ShellMethod("shows book by name")
-    public String showBookName(@ShellOption String bookName) {
+    public String showBookByName(@ShellOption String bookName) {
         return bookService.showBookByName(bookName);
     }
 
     @ShellMethod("shows all books")
-    public List<String> showBooks() {
+    public List<String> showAllBooks() {
         return bookService.showAllBooks();
     }
 
     @ShellMethod("shows book list by genre")
-    public List<String> showBookGenre(@ShellOption String genreName) {
+    public List<String> showBookByGenre(@ShellOption String genreName) {
        return bookService.showBookByGenre(genreName);
     }
 

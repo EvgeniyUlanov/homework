@@ -19,7 +19,7 @@ public class GenreShellCommands {
     }
 
     @ShellMethod("shows all genres that exist in library")
-    public List<String> showGenres() {
+    public List<String> showAllGenres() {
         return genreService.showAllGenres();
     }
 

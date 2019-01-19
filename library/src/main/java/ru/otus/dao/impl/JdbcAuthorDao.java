@@ -25,8 +25,8 @@ public class JdbcAuthorDao implements AuthorDao {
     @Override
     public void save(Author author) {
         final HashMap<String, Object> params = new HashMap<>();
-        params.put("name", author.getName());
-        jdbcOperations.update("insert into authors (author_name) values (:name)", params);
+        params.put("author_name", author.getName());
+        jdbcOperations.update("insert into authors (author_name) values (:author_name)", params);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class JdbcAuthorDao implements AuthorDao {
         HashMap<String, Object> params = new HashMap<>();
         params.put("id", id);
         Author author = jdbcOperations.query(
-                "SELECT id, author_name FROM authors where id = :id",
+                "SELECT author_id, author_name FROM authors where author_id = :id",
                 params,
                 new AuthorMapper()
         ).stream().findFirst().get();
@@ -54,22 +54,22 @@ public class JdbcAuthorDao implements AuthorDao {
         HashMap<String, Object> params = new HashMap<>();
         params.put("id", author.getId());
         params.put("author_name", author.getName());
-        jdbcOperations.update("UPDATE authors AS a SET a.author_name = :author_name WHERE id = :id", params);
+        jdbcOperations.update("UPDATE authors AS a SET a.author_name = :author_name WHERE author_id = :id", params);
     }
 
     @Override
     public void delete(long id) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("id", id);
-        jdbcOperations.update("DELETE FROM authors where id = :id", params);
+        jdbcOperations.update("DELETE FROM authors where author_id = :id", params);
     }
 
     @Override
     public Author getByName(String name) {
         HashMap<String, Object> params = new HashMap<>();
-        params.put("name", name);
+        params.put("author_name", name);
         Author author = jdbcOperations.query(
-                "SELECT id, author_name FROM authors WHERE author_name = :name",
+                "SELECT author_id, author_name FROM authors WHERE author_name = :author_name",
                 params,
                 new AuthorMapper()
         ).stream().findFirst().get();
@@ -90,8 +90,8 @@ public class JdbcAuthorDao implements AuthorDao {
         HashMap<String, Object> params = new HashMap<>();
         params.put("book_id", book.getId());
         List<Author> authorList = jdbcOperations.query(
-                "SELECT a.author_name, a.id FROM authors AS a " +
-                        "INNER JOIN authors_books ab ON a.id = ab.author_id " +
+                "SELECT a.author_name, a.author_id FROM authors AS a " +
+                        "INNER JOIN authors_books ab ON a.author_id = ab.author_id " +
                         "WHERE ab.book_id = :book_id",
                 params,
                 new AuthorMapper()
@@ -104,17 +104,17 @@ public class JdbcAuthorDao implements AuthorDao {
         HashMap<String, Object> params = new HashMap<>();
         params.put("author_id", author.getId());
         return jdbcOperations.query(
-                "SELECT b.id, g.genre_name, b.genre_id, b.book_name " +
+                "SELECT b.book_id, g.genre_name, b.genre_id, b.book_name " +
                         "FROM books b " +
-                        "INNER JOIN genres AS g ON b.genre_id = g.id " +
-                        "INNER JOIN authors_books AS ab ON ab.book_id = b.id " +
+                        "INNER JOIN genres AS g ON b.genre_id = g.genre_id " +
+                        "INNER JOIN authors_books AS ab ON ab.book_id = b.book_id " +
                         "WHERE ab.author_id = :author_id",
                 params,
                 (rs, rowNum) -> {
                     Genre genre = new Genre(rs.getString("genre_name"));
                     genre.setId(rs.getLong("genre_id"));
                     Book book = new Book(genre, rs.getString("book_name"));
-                    book.setId(rs.getLong("id"));
+                    book.setId(rs.getLong("book_id"));
                     return book;
                 });
     }
@@ -123,7 +123,7 @@ public class JdbcAuthorDao implements AuthorDao {
         @Override
         public Author mapRow(ResultSet rs, int rowNum) throws SQLException {
             Author author = new Author(rs.getString("author_name"));
-            author.setId(rs.getLong("id"));
+            author.setId(rs.getLong("author_id"));
             return author;
         }
     }

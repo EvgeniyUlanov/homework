@@ -28,14 +28,14 @@ public class BookShellCommandsTest {
 
     @Test
     public void showBookNameTest() {
-        String response = (String) shell.evaluate(() -> "show-book-name testBook1");
+        String response = (String) shell.evaluate(() -> "show-book-by-name testBook1");
         assertThat(response, is("Book{name='testBook1', genre=Drama}"));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void showBooksTest() {
-        List<String> response = (List<String>) shell.evaluate(() -> "show-books");
+        List<String> response = (List<String>) shell.evaluate(() -> "show-all-books");
         assertThat(
                 response,
                 Matchers.containsInAnyOrder(
@@ -48,7 +48,7 @@ public class BookShellCommandsTest {
     @Test
     @SuppressWarnings("unchecked")
     public void showBookGenreTest() {
-        List<String> response = (List<String>) shell.evaluate(() -> "show-book-genre Comedy");
+        List<String> response = (List<String>) shell.evaluate(() -> "show-book-by-genre Comedy");
         assertThat(
                 response,
                 Matchers.containsInAnyOrder(

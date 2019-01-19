@@ -1,5 +1,6 @@
 package ru.otus.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Book {
@@ -7,7 +8,10 @@ public class Book {
     private long id;
     private String name;
     private Genre genre;
-    private List<Author> authors;
+    private List<Author> authors = new ArrayList<>();
+
+    public Book() {
+    }
 
     public Book(Genre genre, String name) {
         this.genre = genre;

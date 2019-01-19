@@ -30,9 +30,8 @@ public class GenreShellCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testShowAllGenres() {
-        List<String> response = (List<String>)  shell.evaluate(() -> "show-genres");
+        List<String> response = (List<String>)  shell.evaluate(() -> "show-all-genres");
         assertThat(response, containsInAnyOrder("Drama", "Comedy", "Poem"));
-        System.out.println(response.toString());
     }
 
     @Test
