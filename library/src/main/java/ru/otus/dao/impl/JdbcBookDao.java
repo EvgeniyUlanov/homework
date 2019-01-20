@@ -12,9 +12,7 @@ import ru.otus.models.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class JdbcBookDao implements BookDao {
@@ -63,13 +61,14 @@ public class JdbcBookDao implements BookDao {
 
     @Override
     public List<Book> getAll() {
-        return jdbcOperations.query(
+        Map<Long, Book> bookMap = jdbcOperations.query(
                 "SELECT b.book_id, g.genre_name, b.genre_id, b.book_name, a.author_id, a.author_name FROM books AS b " +
                         "INNER JOIN genres AS g ON g.genre_id = b.genre_id " +
                         "LEFT JOIN authors_books ab on b.book_id = ab.book_id " +
                         "LEFT JOIN authors AS a ON ab.author_id = a.author_id ",
-                new ResultSetExtractorForBookList()
+                new ResultSetExtractorForBookMap()
         );
+        return new ArrayList<>(bookMap.values());
     }
 
     @Override
@@ -91,22 +90,23 @@ public class JdbcBookDao implements BookDao {
     public List<Book> getByGenre(String genre) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("genreName", genre);
-        return jdbcOperations.query(
+        Map<Long, Book> bookMap = jdbcOperations.query(
                 "SELECT b.book_id, g.genre_name, b.genre_id, b.book_name, a.author_id, a.author_name FROM books AS b " +
                         "INNER JOIN genres AS g ON g.genre_id = b.genre_id " +
                         "LEFT JOIN authors_books ab on b.book_id = ab.book_id " +
                         "LEFT JOIN authors AS a ON ab.author_id = a.author_id " +
                         "WHERE g.genre_name = :genreName",
                 params,
-                new ResultSetExtractorForBookList()
+                new ResultSetExtractorForBookMap()
         );
+        return new ArrayList<>(bookMap.values());
     }
 
     @Override
     public List<Book> getByAuthor(Author author) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("author_id", author.getId());
-        return jdbcOperations.query(
+        Map<Long, Book> bookMap = jdbcOperations.query(
                 "SELECT b.book_id, g.genre_name, b.genre_id, b.book_name, a.author_id, a.author_name " +
                         "FROM books b " +
                         "INNER JOIN genres AS g ON b.genre_id = g.genre_id " +
@@ -114,8 +114,9 @@ public class JdbcBookDao implements BookDao {
                         "INNER JOIN authors AS a ON ab.author_id = a.author_id " +
                         "WHERE ab.author_id = :author_id",
                 params,
-                new ResultSetExtractorForBookList()
+                new ResultSetExtractorForBookMap()
         );
+        return new ArrayList<>(bookMap.values());
     }
 
     @Override
@@ -137,19 +138,19 @@ public class JdbcBookDao implements BookDao {
         jdbcOperations.update("DELETE FROM books where book_id = :id", params);
     }
 
-    private class ResultSetExtractorForBookList implements ResultSetExtractor<List<Book>> {
+    private class ResultSetExtractorForBookMap implements ResultSetExtractor<Map<Long, Book>> {
         @Override
-        public List<Book> extractData(ResultSet rs) throws SQLException, DataAccessException {
-            List<Book> resultBookList = new ArrayList<>();
+        public Map<Long, Book> extractData(ResultSet rs) throws SQLException, DataAccessException {
+            Map<Long, Book> resultBookMap = new TreeMap<>();
             while (rs.next()) {
                 Long bookId = rs.getLong("book_id");
-                Book book = resultBookList.stream().filter(e -> e.getId() == bookId).findFirst().orElse(null);
+                Book book = resultBookMap.get(bookId);
                 if (book == null) {
                     Genre genre = new Genre(rs.getString("genre_name"));
                     genre.setId(rs.getLong("genre_id"));
                     book = new Book(genre, rs.getString("book_name"));
                     book.setId(bookId);
-                    resultBookList.add(book);
+                    resultBookMap.put(book.getId(), book);
                 }
                 List<Author> authorList = book.getAuthors();
                 Long authorId = rs.getLong("author_id");
@@ -163,7 +164,7 @@ public class JdbcBookDao implements BookDao {
                     }
                 }
             }
-            return resultBookList;
+            return resultBookMap;
         }
     }
 
