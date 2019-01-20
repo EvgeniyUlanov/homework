@@ -19,7 +19,3 @@ INSERT INTO authors_books(author_id, book_id) VALUES (
   (SELECT author_id FROM authors WHERE author_name = 'testAuthor'),
   (SELECT book_id FROM books WHERE book_name = 'testBook2')
 );
--- INSERT INTO authors_books(author_id, book_id) VALUES (
---   (SELECT author_id FROM authors WHERE author_name = 'testAuthor'),
---   (SELECT book_id FROM books WHERE book_name = 'testBook3')
--- );
