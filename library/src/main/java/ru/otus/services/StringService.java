@@ -4,15 +4,15 @@ import java.util.List;
 
 public interface StringService {
 
-    List<String> AllAuthorsToStringList();
+    List<String> allAuthorsToStringList();
 
-    List<String> AllGenresToString();
+    List<String> allGenresToString();
 
-    List<String> AllBooksToString();
+    List<String> allBooksToString();
 
-    List<String> BookByGenreToString(String genre);
+    List<String> bookByGenreToString(String genre);
 
-    List<String> BookByAuthorToString(String authorName);
+    List<String> bookByAuthorToString(String authorName);
 
-    String BookByNameToString(String bookName);
+    String bookByNameToString(String bookName);
 }

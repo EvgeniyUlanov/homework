@@ -23,22 +23,22 @@ public class BookShellCommands {
 
     @ShellMethod("shows book by name")
     public String showBookByName(@ShellOption String bookName) {
-        return stringService.BookByNameToString(bookName);
+        return stringService.bookByNameToString(bookName);
     }
 
     @ShellMethod("shows all books")
     public List<String> showAllBooks() {
-        return stringService.AllBooksToString();
+        return stringService.allBooksToString();
     }
 
     @ShellMethod("shows books by genre")
     public List<String> showBooksByGenre(@ShellOption String genreName) {
-       return stringService.BookByGenreToString(genreName);
+       return stringService.bookByGenreToString(genreName);
     }
 
     @ShellMethod("shows books by author")
     public List<String> showBooksByAuthor(@ShellOption String authorName) {
-        return stringService.BookByAuthorToString(authorName);
+        return stringService.bookByAuthorToString(authorName);
     }
 
     @ShellMethod("add book, example: add-book 'book name' genreName baseAuthorName," +

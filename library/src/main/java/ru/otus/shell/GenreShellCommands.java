@@ -23,7 +23,7 @@ public class GenreShellCommands {
 
     @ShellMethod("shows all genres that exist in library")
     public List<String> showAllGenres() {
-        return stringService.AllGenresToString();
+        return stringService.allGenresToString();
     }
 
     @ShellMethod("add new genre with name genreName - 'add-genre genreName'")

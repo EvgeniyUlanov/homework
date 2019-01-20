@@ -23,7 +23,7 @@ public class AuthorShellCommands {
 
     @ShellMethod("shows all authors")
     public List<String> showAllAuthors() {
-        return stringService.AllAuthorsToStringList();
+        return stringService.allAuthorsToStringList();
     }
 
     @ShellMethod("add new author")

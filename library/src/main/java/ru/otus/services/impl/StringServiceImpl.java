@@ -26,7 +26,7 @@ public class StringServiceImpl implements StringService {
     }
 
     @Override
-    public List<String> AllAuthorsToStringList() {
+    public List<String> allAuthorsToStringList() {
         List<Author> authors = authorService.getAll();
         List<String> authorNameList = new ArrayList<>();
         for (Author author : authors) {
@@ -36,7 +36,7 @@ public class StringServiceImpl implements StringService {
     }
 
     @Override
-    public List<String> AllGenresToString() {
+    public List<String> allGenresToString() {
         List<String> genreNameList = new ArrayList<>();
         List<Genre> genreList = genreService.getAllGenres();
         for (Genre genre : genreList) {
@@ -46,7 +46,7 @@ public class StringServiceImpl implements StringService {
     }
 
     @Override
-    public List<String> AllBooksToString() {
+    public List<String> allBooksToString() {
         List<Book> bookList = bookService.getAllBooks();
         List<String> bookListAsStrings = new ArrayList<>();
         if (bookList != null) {
@@ -58,7 +58,7 @@ public class StringServiceImpl implements StringService {
     }
 
     @Override
-    public List<String> BookByGenreToString(String genre) {
+    public List<String> bookByGenreToString(String genre) {
         List<Book> bookList = bookService.getBookByGenre(genre);
         List<String> bookListAsStrings = new ArrayList<>();
         if (bookList != null) {
@@ -70,7 +70,7 @@ public class StringServiceImpl implements StringService {
     }
 
     @Override
-    public List<String> BookByAuthorToString(String authorName) {
+    public List<String> bookByAuthorToString(String authorName) {
         List<String> bookListAsStrings = new ArrayList<>();
         List<Book> bookList = bookService.getBookByAuthor(authorName);
         for (Book book : bookList) {
@@ -80,7 +80,7 @@ public class StringServiceImpl implements StringService {
     }
 
     @Override
-    public String BookByNameToString(String bookName) {
+    public String bookByNameToString(String bookName) {
         return bookService.getBookByName(bookName).toString();
     }
 }
