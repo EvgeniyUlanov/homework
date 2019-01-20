@@ -2,7 +2,6 @@ package ru.otus.dao.impl;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.otus.dao.AuthorDao;
@@ -171,23 +170,26 @@ public class JdbcBookDao implements BookDao {
     private class ResultSetExtractorForBook implements ResultSetExtractor<Book> {
         @Override
         public Book extractData(ResultSet rs) throws SQLException, DataAccessException {
-            rs.next();
-            Genre genre = new Genre(rs.getString("genre_name"));
-            Book book = new Book(genre, rs.getString("book_name"));
-            book.setId(rs.getLong("book_id"));
-            List<Author> authorList = book.getAuthors();
-            do {
-                Long authorId = rs.getLong("author_id");
-                String authorName = rs.getString("author_name");
-                if (authorName != null) {
-                    Author author = authorList.stream().filter(e -> e.getId() == authorId).findFirst().orElse(null);
-                    if (author == null) {
-                        author = new Author(authorName);
-                        author.setId(authorId);
-                        authorList.add(author);
+            Book book = null;
+            if (rs.next()) {
+                Genre genre = new Genre(rs.getString("genre_name"));
+                genre.setId(rs.getLong("genre_id"));
+                book = new Book(genre, rs.getString("book_name"));
+                book.setId(rs.getLong("book_id"));
+                List<Author> authorList = book.getAuthors();
+                do {
+                    Long authorId = rs.getLong("author_id");
+                    String authorName = rs.getString("author_name");
+                    if (authorName != null) {
+                        Author author = authorList.stream().filter(e -> e.getId() == authorId).findFirst().orElse(null);
+                        if (author == null) {
+                            author = new Author(authorName);
+                            author.setId(authorId);
+                            authorList.add(author);
+                        }
                     }
-                }
-            } while (rs.next());
+                } while (rs.next());
+            }
             return book;
         }
     }
