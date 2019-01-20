@@ -23,6 +23,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public void addGenre(String genreName) {
-        genreDao.addGenre(genreName);
+        Genre genre = new Genre(genreName);
+        genreDao.addGenre(genre);
     }
 }

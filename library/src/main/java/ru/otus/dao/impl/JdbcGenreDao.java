@@ -24,29 +24,30 @@ public class JdbcGenreDao implements GenreDao {
     public Genre getGenreById(long id) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("genre_id", id);
-        return jdbcOperations.query(
+        return jdbcOperations.queryForObject(
                 "SELECT g.genre_name, g.genre_id FROM genres g WHERE g.genre_id = :genre_id",
                 params,
                 new GenreMapper()
-        ).stream().findFirst().get();
+        );
     }
 
     @Override
     public Genre getByName(String name) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("genre_name", name);
-        return jdbcOperations.query(
+        return jdbcOperations.queryForObject(
                 "SELECT genre_name, genre_id FROM genres WHERE genre_name = :genre_name",
                 params,
                 new GenreMapper()
-        ).stream().findFirst().get();
+        );
     }
 
     @Override
-    public void addGenre(String name) {
+    public void addGenre(Genre genre) {
         HashMap<String, Object> params = new HashMap<>();
-        params.put("genre_name", name);
+        params.put("genre_name", genre.getName());
         jdbcOperations.update("INSERT INTO genres (genre_name) values (:genre_name)", params);
+        genre.setId(getByName(genre.getName()).getId());
     }
 
     @Override
