@@ -25,12 +25,11 @@ public class JdbcAuthorDao implements AuthorDao {
     public void save(Author author) {
         final HashMap<String, Object> params = new HashMap<>();
         params.put("author_name", author.getName());
-        Long authorId = jdbcOperations.queryForObject(
-                "INSERT INTO authors (author_name) VALUES (:author_name) ON CONFLICT DO NOTHING RETURNING author_id",
-                params,
-                (rs, rowNum) -> rs.getLong("author_id")
-        );
-        author.setId(authorId);
+        try {
+            jdbcOperations.update("INSERT INTO authors (author_name) VALUES (:author_name)", params);
+        } finally {
+            author.setId(getByName(author.getName()).getId());
+        }
     }
 
     @Override
@@ -80,12 +79,14 @@ public class JdbcAuthorDao implements AuthorDao {
         HashMap<String, Object> params = new HashMap<>();
         params.put("author_id", author.getId());
         params.put("book_id", book.getId());
-        jdbcOperations.update(
-                "INSERT INTO authors_books (author_id, book_id) " +
-                        "VALUES (:author_id, :book_id) " +
-                        "ON CONFLICT DO NOTHING ",
-                params
-        );
+        try {
+            jdbcOperations.update(
+                    "INSERT INTO authors_books (author_id, book_id) " +
+                            "VALUES (:author_id, :book_id)",
+                    params
+            );
+        } catch (Exception ignored) {
+        }
     }
 
     private class AuthorMapper implements RowMapper<Author> {

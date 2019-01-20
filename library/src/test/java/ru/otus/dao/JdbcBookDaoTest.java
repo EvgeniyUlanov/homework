@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.otus.dao.impl.JdbcAuthorDao;
 import ru.otus.dao.impl.JdbcBookDao;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
@@ -21,7 +22,7 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringRunner.class)
 @JdbcTest
-@Import(JdbcBookDao.class)
+@Import({JdbcBookDao.class, JdbcAuthorDao.class})
 public class JdbcBookDaoTest {
 
     @Autowired
@@ -30,11 +31,13 @@ public class JdbcBookDaoTest {
     private AuthorDao authorDao;
 
     @Test
-    public void testSaveAndGetByNameMethod() {
+    public void testSaveAndGetByNameGetByIdMethods() {
         BookDao bookDao = new JdbcBookDao(jdbcOperations, authorDao);
         Book book = new Book(new Genre("Drama"),"new book");
         bookDao.save(book);
         Book expected = bookDao.getByName("new book");
         assertThat(expected.getName(), is("new book"));
+        expected = bookDao.getById(book.getId());
+        assertThat(expected.getId(), is(book.getId()));
     }
 }

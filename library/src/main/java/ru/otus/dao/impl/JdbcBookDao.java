@@ -33,15 +33,14 @@ public class JdbcBookDao implements BookDao {
         HashMap<String, Object> params = new HashMap<>();
         params.put("book_name", book.getName());
         params.put("genre", book.getGenre().getName());
-        Long bookId = jdbcOperations.queryForObject(
+        jdbcOperations.update(
                 "INSERT INTO books (book_name, genre_id) " +
                         "VALUES (" +
                         ":book_name, " +
-                        "(SELECT genre_id FROM genres where genre_name =:genre)) RETURNING book_id",
-                params,
-                (rs, rowNum) -> rs.getLong("book_id")
+                        "(SELECT genre_id FROM genres where genre_name =:genre))",
+                params
         );
-        book.setId(bookId);
+        book.setId(getByName(book.getName()).getId());
         for (Author author : book.getAuthors()) {
             authorDao.save(author);
             authorDao.addBookToAuthor(author, book);
