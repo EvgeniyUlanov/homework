@@ -54,12 +54,14 @@ public class BookServiceImpl implements BookService {
     @Override
     public void addBook(String bookName, String genre, String authorName) {
         Genre foundedGenre = genreDao.getByName(genre);
-        Author foundedAuthor = authorDao.getByName(authorName);
-        if (foundedGenre != null && foundedAuthor != null) {
-            Book book = new Book(foundedGenre, bookName);
-            bookDao.save(book);
-            book = bookDao.getByName(bookName);
-            authorDao.addBookToAuthor(foundedAuthor, book);
+        Author foundedAuthor;
+        try {
+            foundedAuthor = authorDao.getByName(authorName);
+        } catch (Exception e) {
+            foundedAuthor = new Author(authorName);
         }
+        Book book = new Book(foundedGenre, bookName);
+        book.getAuthors().add(foundedAuthor);
+        bookDao.save(book);
     }
 }

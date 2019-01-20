@@ -2,8 +2,10 @@ package ru.otus.dao.impl;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
+import ru.otus.dao.AuthorDao;
 import ru.otus.dao.BookDao;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
@@ -19,9 +21,11 @@ import java.util.List;
 public class JdbcBookDao implements BookDao {
 
     private NamedParameterJdbcOperations jdbcOperations;
+    private AuthorDao authorDao;
 
-    public JdbcBookDao(NamedParameterJdbcOperations jdbcOperations) {
+    public JdbcBookDao(NamedParameterJdbcOperations jdbcOperations, AuthorDao authorDao) {
         this.jdbcOperations = jdbcOperations;
+        this.authorDao = authorDao;
     }
 
     @Override
@@ -29,12 +33,19 @@ public class JdbcBookDao implements BookDao {
         HashMap<String, Object> params = new HashMap<>();
         params.put("book_name", book.getName());
         params.put("genre", book.getGenre().getName());
-        jdbcOperations.update(
+        Long bookId = jdbcOperations.queryForObject(
                 "INSERT INTO books (book_name, genre_id) " +
                         "VALUES (" +
                         ":book_name, " +
-                        "(SELECT genre_id FROM genres where genre_name =:genre))",
-                params);
+                        "(SELECT genre_id FROM genres where genre_name =:genre)) RETURNING book_id",
+                params,
+                (rs, rowNum) -> rs.getLong("book_id")
+        );
+        book.setId(bookId);
+        for (Author author : book.getAuthors()) {
+            authorDao.save(author);
+            authorDao.addBookToAuthor(author, book);
+        }
     }
 
     @Override

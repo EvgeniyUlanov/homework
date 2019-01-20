@@ -25,7 +25,12 @@ public class JdbcAuthorDao implements AuthorDao {
     public void save(Author author) {
         final HashMap<String, Object> params = new HashMap<>();
         params.put("author_name", author.getName());
-        jdbcOperations.update("insert into authors (author_name) values (:author_name)", params);
+        Long authorId = jdbcOperations.queryForObject(
+                "INSERT INTO authors (author_name) VALUES (:author_name) ON CONFLICT DO NOTHING RETURNING author_id",
+                params,
+                (rs, rowNum) -> rs.getLong("author_id")
+        );
+        author.setId(authorId);
     }
 
     @Override
@@ -33,7 +38,7 @@ public class JdbcAuthorDao implements AuthorDao {
         HashMap<String, Object> params = new HashMap<>();
         params.put("id", id);
         return jdbcOperations.queryForObject(
-                "SELECT author_id, author_name FROM authors where author_id = :id",
+                "SELECT author_id, author_name FROM authors WHERE author_id = :id",
                 params,
                 new AuthorMapper()
         );
@@ -41,7 +46,7 @@ public class JdbcAuthorDao implements AuthorDao {
 
     @Override
     public List<Author> getAll() {
-        return jdbcOperations.query("select * from authors", new AuthorMapper());
+        return jdbcOperations.query("SELECT * FROM authors", new AuthorMapper());
     }
 
     @Override
@@ -56,7 +61,7 @@ public class JdbcAuthorDao implements AuthorDao {
     public void delete(long id) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("id", id);
-        jdbcOperations.update("DELETE FROM authors where author_id = :id", params);
+        jdbcOperations.update("DELETE FROM authors WHERE author_id = :id", params);
     }
 
     @Override
@@ -76,7 +81,9 @@ public class JdbcAuthorDao implements AuthorDao {
         params.put("author_id", author.getId());
         params.put("book_id", book.getId());
         jdbcOperations.update(
-                "INSERT INTO authors_books (author_id, book_id) VALUES (:author_id, :book_id)",
+                "INSERT INTO authors_books (author_id, book_id) " +
+                        "VALUES (:author_id, :book_id) " +
+                        "ON CONFLICT DO NOTHING ",
                 params
         );
     }
