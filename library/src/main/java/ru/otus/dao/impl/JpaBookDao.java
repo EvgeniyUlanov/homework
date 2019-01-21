@@ -41,7 +41,10 @@ public class JpaBookDao implements BookDao {
 
     @Override
     public Book getByName(String name) {
-        TypedQuery<Book> query = entityManager.createQuery("select b from Book b where b.name = :name", Book.class);
+        TypedQuery<Book> query = entityManager.createQuery(
+                "select b from Book b where b.name = :name",
+                Book.class
+        );
         query.setParameter("name", name);
         Book book = query.getSingleResult();
         System.out.println(book.getAuthors());
@@ -50,7 +53,10 @@ public class JpaBookDao implements BookDao {
 
     @Override
     public List<Book> getByGenre(String genre) {
-        TypedQuery<Book> query = entityManager.createQuery("select b from Book b where b.genre.name = :genre", Book.class);
+        TypedQuery<Book> query = entityManager.createQuery(
+                "select b from Book b where b.genre.name = :genre",
+                Book.class
+        );
         query.setParameter("genre", genre);
         return query.getResultList();
     }

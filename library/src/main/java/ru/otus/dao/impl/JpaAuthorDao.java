@@ -28,7 +28,10 @@ public class JpaAuthorDao implements AuthorDao {
 
     @Override
     public Author getById(long id) {
-        TypedQuery<Author> query = entityManager.createQuery("select a from Author a where a.id = :id", Author.class);
+        TypedQuery<Author> query = entityManager.createQuery(
+                "select a from Author a where a.id = :id",
+                Author.class
+        );
         query.setParameter("id", id);
         return query.getSingleResult();
     }
@@ -51,7 +54,10 @@ public class JpaAuthorDao implements AuthorDao {
 
     @Override
     public Author getByName(String name) {
-        TypedQuery<Author> query = entityManager.createQuery("select a from Author a where a.name = :name", Author.class);
+        TypedQuery<Author> query = entityManager.createQuery(
+                "select a from Author a where a.name = :name",
+                Author.class
+        );
         query.setParameter("name", name);
         return query.getSingleResult();
     }
