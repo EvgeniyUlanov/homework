@@ -12,17 +12,24 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id")
     private Long id;
+
     @Column(name = "book_name")
     private String name;
-    @ManyToOne(fetch = FetchType.EAGER)
+
+    @ManyToOne
     @JoinColumn(name = "genre_id")
     private Genre genre;
+
     @ManyToMany
     @JoinTable(name = "authors_books",
             joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "author_id")
     )
     private List<Author> authors = new ArrayList<>();
+
+    @OneToMany
+    @JoinColumn(name = "book_id", referencedColumnName = "book_id")
+    private List<Comment> comments;
 
     public Book() {
     }
@@ -32,11 +39,11 @@ public class Book {
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -62,6 +69,14 @@ public class Book {
 
     public void setAuthors(List<Author> authors) {
         this.authors = authors;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override
