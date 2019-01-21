@@ -1,13 +1,22 @@
 package ru.otus.models;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "books")
 public class Book {
 
+    @Id
+    @GeneratedValue
+    @Column(name = "book_id")
     private long id;
+    @Column(name = "book_name")
     private String name;
+    @ManyToOne
     private Genre genre;
+    @ManyToMany
     private List<Author> authors = new ArrayList<>();
 
     public Book() {

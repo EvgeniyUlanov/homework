@@ -1,5 +1,6 @@
 package ru.otus.dao.impl;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Repository
+@Profile("jdbc")
 public class JdbcAuthorDao implements AuthorDao {
 
     private NamedParameterJdbcOperations jdbcOperations;

@@ -1,9 +1,21 @@
 package ru.otus.models;
 
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "genres")
 public class Genre {
 
+    @Id
+    @GeneratedValue
+    @Column(name = "genre_id")
     private long id;
+    @Column(name = "genre_name")
     private String name;
+
+    public Genre() {
+    }
 
     public Genre(String name) {
         this.name = name;

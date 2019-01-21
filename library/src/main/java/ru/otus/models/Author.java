@@ -1,9 +1,21 @@
 package ru.otus.models;
 
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "authors")
 public class Author {
 
+    @Id
+    @GeneratedValue
+    @Column(name = "author_id")
     private long id;
+    @Column(name = "author_name")
     private String name;
+
+    public Author() {
+    }
 
     public Author(String name) {
         this.name = name;

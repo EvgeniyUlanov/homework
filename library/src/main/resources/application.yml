@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: jdbc
   datasource:
     username: postgres
     password: 784512963
@@ -9,3 +9,10 @@ spring:
     initialization-mode: always
     schema: schema/schema.sql
     data: schema/data.sql
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.temp.use_jdbc_metadata_defaults: false
+
+
