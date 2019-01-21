@@ -8,9 +8,9 @@ import javax.persistence.*;
 public class Author {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "author_id")
-    private long id;
+    private Long id;
     @Column(name = "author_name")
     private String name;
 

@@ -9,14 +9,19 @@ import java.util.List;
 public class Book {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id")
-    private long id;
+    private Long id;
     @Column(name = "book_name")
     private String name;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "genre_id")
     private Genre genre;
     @ManyToMany
+    @JoinTable(name = "authors_books",
+            joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "author_id")
+    )
     private List<Author> authors = new ArrayList<>();
 
     public Book() {
