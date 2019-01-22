@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.dao.impl.JpaAuthorDao;
@@ -14,6 +15,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 @RunWith(SpringRunner.class)
@@ -23,58 +25,75 @@ public class JpaAuthorDaoTest {
 
     @Autowired
     private AuthorDao authorDao;
+    @Autowired
+    private TestEntityManager entityManager;
 
     @Test
-    public void testAddAuthorGetByNameGetByIdMethods() {
+    public void testAddAuthorMethod() {
         Author author = new Author("newAuthor");
         authorDao.save(author);
 
-        Author foundedByName = authorDao.getByName("newAuthor");
-        assertThat(foundedByName, is(author));
+        Author expected = entityManager.find(Author.class, author.getId());
 
-        Author foundedById = authorDao.getById(author.getId());
-        assertThat(foundedById, is(author));
+        assertThat(expected.getName(), is("newAuthor"));
+    }
 
-        authorDao.delete(author.getId());
+    @Test
+    public void testGetByNameMethod() {
+        Author author = new Author("someAuthor");
+        entityManager.persistAndFlush(author);
+
+        Author expected = authorDao.getByName("someAuthor");
+
+        assertThat(expected, is(notNullValue()));
+    }
+
+    @Test
+    public void testGetByIdMethod() {
+        Author author = new Author("someAuthor");
+        entityManager.persistAndFlush(author);
+
+        Author expected = authorDao.getById(author.getId());
+        assertThat(expected.getName(), is("someAuthor"));
     }
 
     @Test
     public void testDeleteMethod() {
         Author author = new Author("newAuthor");
-        authorDao.save(author);
+        author = entityManager.persistFlushFind(author);
+        Long id = author.getId();
 
-        Author foundedByName = authorDao.getByName("newAuthor");
-        assertThat(foundedByName, is(author));
+        assertThat(author, is(notNullValue()));
 
         authorDao.delete(author.getId());
-        Author expected = authorDao.getById(author.getId());
+        Author expected = entityManager.find(Author.class, id);
 
         assertThat(expected, is(nullValue()));
     }
 
     @Test
+    @SuppressWarnings("JpaQlInspection")
     public void testGetAllMethod() {
-        Author author = new Author("newAuthor");
-        authorDao.save(author);
-        Author testAuthor = authorDao.getByName("testAuthor");
+        Author testAuthor1 = entityManager.persistAndFlush(new Author("testAuthor1"));
+        Author testAuthor2 = entityManager.persistFlushFind(new Author("testAuthor2"));
 
         List<Author> authorList = authorDao.getAll();
-        assertThat(authorList, containsInAnyOrder(author, testAuthor));
+        assertThat(authorList, containsInAnyOrder(testAuthor1, testAuthor2));
     }
 
     @Test
     public void testUpdateMethod() {
         Author author = new Author("newAuthor");
-        authorDao.save(author);
+        entityManager.persistAndFlush(author);
+        entityManager.detach(author);
 
-        Author expected = authorDao.getByName("newAuthor");
+        author.setName("updatedName");
+
+        Author expected = entityManager.find(Author.class, author.getId());
         assertThat(expected.getName(), is("newAuthor"));
-        expected.setName("updatedName");
 
-        authorDao.update(expected);
-        assertThat(expected.getId(), is(author.getId()));
-        assertThat(authorDao.getById(expected.getId()).getName(), is("updatedName"));
-
-        authorDao.delete(author.getId());
+        authorDao.update(author);
+        expected = entityManager.find(Author.class, author.getId());
+        assertThat(expected.getName(), is("updatedName"));
     }
 }

@@ -1,9 +1,11 @@
 package ru.otus.dao;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.dao.impl.JpaAuthorDao;
@@ -22,57 +24,95 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@Import({JpaAuthorDao.class, JpaGenreDao.class, JpaBookDao.class})
+@Import(JpaBookDao.class)
 public class JpaBookDaoTest {
 
     @Autowired
     private BookDao bookDao;
     @Autowired
-    private AuthorDao authorDao;
-    @Autowired
-    private GenreDao genreDao;
+    private TestEntityManager entityManager;
 
     @Test
-    public void testSaveAndGetByNameGetByIdDeleteMethods() {
-        Genre genre = genreDao.getByName("Drama");
+    public void testSaveAndGetByIdDeleteMethods() {
+        Genre genre = entityManager.find(Genre.class, 1L);
         Book book = new Book(genre, "new book");
         bookDao.save(book);
 
+        Book expected = entityManager.find(Book.class, book.getId());
+
+        assertThat(expected.getName(), is("new book"));
+    }
+
+    @Test
+    public void testGetByNameMethod() {
+        Genre genre = entityManager.find(Genre.class, 1L);
+        Book book = new Book(genre, "new book");
+        entityManager.persistAndFlush(book);
+
         Book expected = bookDao.getByName("new book");
-        System.out.println(expected);
+        assertThat(expected.getName(), is("new book"));
+    }
+
+    @Test
+    public void testGetByIdMethod() {
+        Genre genre = entityManager.find(Genre.class, 1L);
+        Book book = new Book(genre, "new book");
+        entityManager.persistAndFlush(book);
+
+        Book expected = bookDao.getById(book.getId());
+        assertThat(expected.getName(), is("new book"));
+    }
+
+    @Test
+    public void testDeleteMethod() {
+        Genre genre = entityManager.persistFlushFind(new Genre("some genre"));
+        Book book = new Book(genre, "new book");
+        entityManager.persistAndFlush(book);
+
+        Book expected = entityManager.find(Book.class, book.getId());
         assertThat(expected.getName(), is("new book"));
 
-        expected = bookDao.getById(book.getId());
-        assertThat(expected.getId(), is(book.getId()));
-
         bookDao.delete(book.getId());
-        assertThat(bookDao.getById(book.getId()), is(nullValue()));
+
+        expected = entityManager.find(Book.class, book.getId());
+        assertThat(expected, is(nullValue()));
     }
 
     @Test
     public void testGetAllBooksMethod() {
-        Book testBook1 = bookDao.getByName("testBook1");
-        Book testBook2 = bookDao.getByName("testBook2");
-        Book testBook3 = bookDao.getByName("testBook3");
+        Genre genre = entityManager.persistFlushFind(new Genre("some genre"));
+        Book testBook1 = entityManager.persistFlushFind(new Book(genre, "testBook1"));
+        Book testBook2 = entityManager.persistFlushFind(new Book(genre, "testBook2"));
+        Book testBook3 = entityManager.persistFlushFind(new Book(genre, "testBook3"));
+
         List<Book> bookList = bookDao.getAll();
         assertThat(bookList, containsInAnyOrder(testBook1, testBook2, testBook3));
     }
 
     @Test
     public void testGetByGenreMethod() {
-        Genre genre = genreDao.getByName("Poem");
-        Book testBook5 = new Book(genre, "testBook5");
-        Book testBook6 = new Book(genre, "testBook6");
-        bookDao.save(testBook5);
-        bookDao.save(testBook6);
-        List<Book> bookList = bookDao.getByGenre("Poem");
+        Genre genre = entityManager.persistFlushFind(new Genre("some genre"));
+        Book testBook5 = entityManager.persistFlushFind(new Book(genre, "testBook5"));
+        Book testBook6 = entityManager.persistFlushFind(new Book(genre, "testBook6"));
+
+        List<Book> bookList = bookDao.getByGenre(genre.getName());
+
         assertThat(bookList, containsInAnyOrder(testBook5, testBook6));
     }
 
     @Test
     public void testGetByAuthorMethod() {
-        Author author = authorDao.getByName("testAuthor");
+        Genre genre = entityManager.persistFlushFind(new Genre("some genre"));
+        Book someBook1 = new Book(genre, "someBook1");
+        Book someBook2 = new Book(genre, "someBook2");
+        Author author = entityManager.persistFlushFind(new Author("someAuthor"));
+        someBook1.getAuthors().add(author);
+        someBook2.getAuthors().add(author);
+        entityManager.persistAndFlush(someBook1);
+        entityManager.persistAndFlush(someBook2);
+
         List<Book> bookList = bookDao.getByAuthor(author);
+
         for (Book book : bookList) {
             assertThat(book.getAuthors(), containsInAnyOrder(author));
         }
@@ -80,14 +120,18 @@ public class JpaBookDaoTest {
 
     @Test
     public void testUpdateMethod() {
-        Genre genre = genreDao.getByName("Drama");
-        Book book = new Book(genre, "someBook");
-        bookDao.save(book);
-        System.out.println(book.getId());
-        book = bookDao.getById(book.getId());
-        assertThat(book.getName(), is("someBook"));
-        book.setName("newBookName");
+        Genre genre = entityManager.persistFlushFind(new Genre("some genre"));
+        Book book = new Book(genre, "some book");
+        entityManager.persistFlushFind(book);
+
+        book.setName("updated book");
+
+        Book expected = entityManager.find(Book.class, book.getId());
+        assertThat(expected.getName(), is("some book"));
+
         bookDao.update(book);
-        assertThat(bookDao.getById(book.getId()).getName(), is("newBookName"));
+
+        expected = entityManager.find(Book.class, book.getId());
+        assertThat(expected.getName(), is("updated book"));
     }
 }

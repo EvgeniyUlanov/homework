@@ -22,18 +22,13 @@ public class JpaBookDao implements BookDao {
 
     @PersistenceContext
     private EntityManager entityManager;
-    private AuthorDao authorDao;
-
-    public JpaBookDao(AuthorDao authorDao) {
-        this.authorDao = authorDao;
-    }
 
     @Override
     public void save(Book book) {
         for (Author author : book.getAuthors()) {
             if (author.getId() == null) {
                 try {
-                    authorDao.save(author);
+                    entityManager.persist(author);
                 } catch (Exception ignore) {
                 }
             }
