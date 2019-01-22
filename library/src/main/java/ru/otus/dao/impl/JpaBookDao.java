@@ -3,6 +3,7 @@ package ru.otus.dao.impl;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.dao.AuthorDao;
 import ru.otus.dao.BookDao;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
@@ -21,17 +22,28 @@ public class JpaBookDao implements BookDao {
 
     @PersistenceContext
     private EntityManager entityManager;
+    private AuthorDao authorDao;
+
+    public JpaBookDao(AuthorDao authorDao) {
+        this.authorDao = authorDao;
+    }
 
     @Override
     public void save(Book book) {
+        for (Author author : book.getAuthors()) {
+            if (author.getId() == null) {
+                try {
+                    authorDao.save(author);
+                } catch (Exception ignore) {
+                }
+            }
+        }
         entityManager.persist(book);
     }
 
     @Override
     public Book getById(long id) {
-        TypedQuery<Book> query = entityManager.createQuery("select b from Book b where b.id = :id", Book.class);
-        query.setParameter("id", id);
-        return query.getSingleResult();
+        return entityManager.find(Book.class, id);
     }
 
     @Override
@@ -46,9 +58,7 @@ public class JpaBookDao implements BookDao {
                 Book.class
         );
         query.setParameter("name", name);
-        Book book = query.getSingleResult();
-        System.out.println(book.getAuthors());
-        return book;
+        return query.getSingleResult();
     }
 
     @Override

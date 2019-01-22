@@ -27,8 +27,8 @@ public class Book {
     )
     private List<Author> authors = new ArrayList<>();
 
-    @OneToMany
-    @JoinColumn(name = "book_id", referencedColumnName = "book_id")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "book_id", referencedColumnName = "book_id", nullable = false)
     private List<Comment> comments;
 
     public Book() {

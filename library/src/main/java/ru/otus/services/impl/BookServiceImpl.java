@@ -6,6 +6,7 @@ import ru.otus.dao.BookDao;
 import ru.otus.dao.GenreDao;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
+import ru.otus.models.Comment;
 import ru.otus.models.Genre;
 import ru.otus.services.BookService;
 
@@ -63,5 +64,22 @@ public class BookServiceImpl implements BookService {
         Book book = new Book(foundedGenre, bookName);
         book.getAuthors().add(foundedAuthor);
         bookDao.save(book);
+    }
+
+    @Override
+    public void addCommentToBook(String bookName, String commentString) {
+        Book book = bookDao.getByName(bookName);
+        book.getComments().add(new Comment(commentString));
+        bookDao.update(book);
+    }
+
+    @Override
+    public List<String> getCommentsByBook(String bookName) {
+        Book book = bookDao.getByName(bookName);
+        List<String> commentList = new ArrayList<>();
+        for (Comment comment : book.getComments()) {
+            commentList.add(comment.getComment());
+        }
+        return commentList;
     }
 }

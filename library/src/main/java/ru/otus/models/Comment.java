@@ -16,6 +16,10 @@ public class Comment {
     public Comment() {
     }
 
+    public Comment(String comment) {
+        this.comment = comment;
+    }
+
     public Long getId() {
         return id;
     }

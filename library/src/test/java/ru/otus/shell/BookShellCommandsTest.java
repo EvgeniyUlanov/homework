@@ -10,11 +10,13 @@ import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.dao.BookDao;
 import ru.otus.models.Book;
+import ru.otus.models.Comment;
 
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false"
@@ -75,5 +77,23 @@ public class BookShellCommandsTest {
                         "Book{name='testBook1', genre=Drama}",
                         "Book{name='testBook2', genre=Comedy}")
         );
+    }
+
+    @Test
+    public void testAddCommentToBook() {
+        shell.evaluate(() -> "add-comment-to-book testBook1 testComment");
+        Book testBook = bookDao.getByName("testBook1");
+        Comment comment = testBook.getComments().get(0);
+
+        assertThat(comment.getComment(), is("testComment"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testShowAllBookComments() {
+        shell.evaluate(() -> "add-comment-to-book testBook2 testComment1");
+        shell.evaluate(() -> "add-comment-to-book testBook2 testComment2");
+        List<String> commentList = (List<String>) shell.evaluate(() -> "show-book-comments testBook2");
+        assertThat(commentList, Matchers.containsInAnyOrder("testComment1", "testComment2"));
     }
 }
