@@ -1,5 +1,6 @@
 package ru.otus.dao.impl;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Repository
+@Profile("jdbc")
 public class JdbcBookDao implements BookDao {
 
     private NamedParameterJdbcOperations jdbcOperations;
