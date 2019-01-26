@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.dao.impl.JdbcAuthorDao;
@@ -22,6 +23,7 @@ import static org.hamcrest.core.Is.is;
 @RunWith(SpringRunner.class)
 @JdbcTest
 @Import({JdbcBookDao.class, JdbcAuthorDao.class})
+@Profile("jdbc")
 public class JdbcBookDaoTest {
 
     @Autowired

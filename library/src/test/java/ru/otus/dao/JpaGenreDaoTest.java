@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.dao.impl.JpaGenreDao;
 import ru.otus.models.Genre;
@@ -21,6 +22,7 @@ import static org.hamcrest.Matchers.nullValue;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @Import(JpaGenreDao.class)
+@Profile("jpa")
 public class JpaGenreDaoTest {
 
     @Autowired

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.dao.impl.JpaAuthorDao;
 import ru.otus.dao.impl.JpaBookDao;
@@ -25,6 +26,7 @@ import static org.hamcrest.core.Is.is;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @Import(JpaBookDao.class)
+@Profile("jpa")
 public class JpaBookDaoTest {
 
     @Autowired
