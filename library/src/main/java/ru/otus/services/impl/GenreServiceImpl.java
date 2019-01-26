@@ -1,5 +1,6 @@
 package ru.otus.services.impl;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import ru.otus.dao.GenreDao;
 import ru.otus.models.Genre;
@@ -8,6 +9,7 @@ import ru.otus.services.GenreService;
 import java.util.List;
 
 @Service
+@Profile({"jdbc", "jpa"})
 public class GenreServiceImpl implements GenreService {
 
     private GenreDao genreDao;

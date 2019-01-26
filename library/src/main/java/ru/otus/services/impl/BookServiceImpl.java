@@ -1,5 +1,6 @@
 package ru.otus.services.impl;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import ru.otus.dao.AuthorDao;
 import ru.otus.dao.BookDao;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Profile({"jdbc", "jpa"})
 public class BookServiceImpl implements BookService {
 
     private BookDao bookDao;

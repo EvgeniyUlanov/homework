@@ -1,7 +1,7 @@
 spring:
   profiles:
     active: test
-    include: jpa
+    include: springData
   datasource:
      url: jdbc:h2:mem:library_test
      initialization-mode: always
