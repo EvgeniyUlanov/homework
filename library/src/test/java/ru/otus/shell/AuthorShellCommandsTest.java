@@ -29,7 +29,7 @@ import static org.hamcrest.core.Is.is;
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false"
 })
 @Profile({"jdbc", "jpa"})
-public class AuthorShellCommandTest {
+public class AuthorShellCommandsTest {
 
     @Autowired
     private Shell shell;

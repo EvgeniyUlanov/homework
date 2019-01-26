@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.notNullValue;
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false"
 })
 @Profile({"jdbc", "jpa"})
-public class GenreShellCommandTest {
+public class GenreShellCommandsTest {
 
     @Autowired
     private Shell shell;

@@ -37,7 +37,7 @@ import static org.hamcrest.core.Is.is;
 @AutoConfigureTestDatabase
 @AutoConfigureTestEntityManager
 @Profile("springData")
-public class BookShellCommandsTestWithRepositories {
+public class BookShellCommandsWithRepositoriesTest {
 
     @Autowired
     private Shell shell;

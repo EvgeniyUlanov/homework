@@ -37,7 +37,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @AutoConfigureTestDatabase
 @AutoConfigureTestEntityManager
 @Profile("springData")
-public class AuthorShellCommandsTestWithRepositories {
+public class AuthorShellCommandsWithRepositoriesTest {
 
     @Autowired
     private Shell shell;
