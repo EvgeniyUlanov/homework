@@ -91,7 +91,7 @@ public class JdbcAuthorDao implements AuthorDao {
         }
     }
 
-    private class AuthorMapper implements RowMapper<Author> {
+    private static class AuthorMapper implements RowMapper<Author> {
         @Override
         public Author mapRow(ResultSet rs, int rowNum) throws SQLException {
             Author author = new Author(rs.getString("author_name"));

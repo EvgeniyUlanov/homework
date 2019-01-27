@@ -1,14 +1,13 @@
-package ru.otus.dao;
+package ru.otus.repositories;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.dao.impl.JpaAuthorDao;
+import ru.otus.exeptions.EntityNotFoundException;
 import ru.otus.models.Author;
 
 import java.util.List;
@@ -21,19 +20,19 @@ import static org.hamcrest.Matchers.nullValue;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-@Import(JpaAuthorDao.class)
-@ActiveProfiles("jpa")
-public class JpaAuthorDaoTest {
+@ActiveProfiles("springData")
+public class AuthorRepositoryTest {
 
     @Autowired
-    private AuthorDao authorDao;
+    private AuthorRepository authorRepository;
+
     @Autowired
     private TestEntityManager entityManager;
 
     @Test
     public void testAddAuthorMethod() {
         Author author = new Author("newAuthor");
-        authorDao.save(author);
+        authorRepository.save(author);
 
         Author expected = entityManager.find(Author.class, author.getId());
 
@@ -45,7 +44,7 @@ public class JpaAuthorDaoTest {
         Author author = new Author("someAuthor");
         entityManager.persistAndFlush(author);
 
-        Author expected = authorDao.getByName("someAuthor");
+        Author expected = authorRepository.findByName("someAuthor").orElseThrow(() -> new EntityNotFoundException("author not found"));
 
         assertThat(expected, is(notNullValue()));
     }
@@ -55,7 +54,7 @@ public class JpaAuthorDaoTest {
         Author author = new Author("someAuthor");
         entityManager.persistAndFlush(author);
 
-        Author expected = authorDao.getById(author.getId());
+        Author expected = authorRepository.findById(author.getId()).orElse(new Author("wrong author"));
         assertThat(expected.getName(), is("someAuthor"));
     }
 
@@ -67,7 +66,7 @@ public class JpaAuthorDaoTest {
 
         assertThat(author, is(notNullValue()));
 
-        authorDao.delete(author.getId());
+        authorRepository.delete(author);
         Author expected = entityManager.find(Author.class, id);
 
         assertThat(expected, is(nullValue()));
@@ -79,7 +78,7 @@ public class JpaAuthorDaoTest {
         Author testAuthor1 = entityManager.persistAndFlush(new Author("testAuthor1"));
         Author testAuthor2 = entityManager.persistFlushFind(new Author("testAuthor2"));
 
-        List<Author> authorList = authorDao.getAll();
+        List<Author> authorList = authorRepository.findAll();
         assertThat(authorList, containsInAnyOrder(testAuthor1, testAuthor2));
     }
 
@@ -94,7 +93,7 @@ public class JpaAuthorDaoTest {
         Author expected = entityManager.find(Author.class, author.getId());
         assertThat(expected.getName(), is("newAuthor"));
 
-        authorDao.update(author);
+        authorRepository.save(author);
         expected = entityManager.find(Author.class, author.getId());
         assertThat(expected.getName(), is("updatedName"));
     }

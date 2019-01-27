@@ -1,13 +1,14 @@
 package ru.otus.dao;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.dao.impl.JdbcAuthorDao;
 import ru.otus.models.Author;
 
@@ -16,10 +17,12 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @JdbcTest
 @Import({JdbcAuthorDao.class})
+@ActiveProfiles("jdbc")
 public class JdbcAuthorDaoTest {
 
     @Autowired
@@ -40,7 +43,7 @@ public class JdbcAuthorDaoTest {
         authorDao.delete(author.getId());
     }
 
-    @Test(expected = EmptyResultDataAccessException.class)
+    @Test
     public void testDeleteMethod() {
         AuthorDao authorDao = new JdbcAuthorDao(jdbcOperations);
         Author author = new Author("newAuthor");
@@ -50,7 +53,8 @@ public class JdbcAuthorDaoTest {
         assertThat(foundedByName, is(author));
 
         authorDao.delete(author.getId());
-        authorDao.getById(author.getId());
+
+        assertThrows(EmptyResultDataAccessException.class, () -> authorDao.getById(author.getId()));
     }
 
     @Test
@@ -58,7 +62,8 @@ public class JdbcAuthorDaoTest {
         AuthorDao authorDao = new JdbcAuthorDao(jdbcOperations);
         Author author = new Author("newAuthor");
         authorDao.save(author);
-        Author testAuthor = authorDao.getByName("testAuthor");
+        Author testAuthor = new Author("testAuthor");
+        authorDao.save(testAuthor);
 
         List<Author> authorList = authorDao.getAll();
         assertThat(authorList, containsInAnyOrder(author, testAuthor));

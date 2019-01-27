@@ -1,14 +1,13 @@
-package ru.otus.dao;
+package ru.otus.repositories;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.dao.impl.JpaBookDao;
+import ru.otus.exeptions.EntityNotFoundException;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
 import ru.otus.models.Genre;
@@ -22,12 +21,12 @@ import static org.hamcrest.core.Is.is;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-@Import(JpaBookDao.class)
-@ActiveProfiles("jpa")
-public class JpaBookDaoTest {
+@ActiveProfiles("springData")
+public class BookRepositoryTest {
 
     @Autowired
-    private BookDao bookDao;
+    private BookRepository bookRepository;
+
     @Autowired
     private TestEntityManager entityManager;
 
@@ -35,7 +34,7 @@ public class JpaBookDaoTest {
     public void testSaveAndGetByIdDeleteMethods() {
         Genre genre = entityManager.find(Genre.class, 1L);
         Book book = new Book(genre, "new book");
-        bookDao.save(book);
+        bookRepository.save(book);
 
         Book expected = entityManager.find(Book.class, book.getId());
 
@@ -48,7 +47,7 @@ public class JpaBookDaoTest {
         Book book = new Book(genre, "new book");
         entityManager.persistAndFlush(book);
 
-        Book expected = bookDao.getByName("new book");
+        Book expected = bookRepository.findByName("new book").orElseThrow(() -> new EntityNotFoundException("book not found"));
         assertThat(expected.getName(), is("new book"));
     }
 
@@ -58,7 +57,7 @@ public class JpaBookDaoTest {
         Book book = new Book(genre, "new book");
         entityManager.persistAndFlush(book);
 
-        Book expected = bookDao.getById(book.getId());
+        Book expected = bookRepository.findById(book.getId()).orElse(new Book(genre, "wrong book"));
         assertThat(expected.getName(), is("new book"));
     }
 
@@ -71,7 +70,7 @@ public class JpaBookDaoTest {
         Book expected = entityManager.find(Book.class, book.getId());
         assertThat(expected.getName(), is("new book"));
 
-        bookDao.delete(book.getId());
+        bookRepository.delete(book);
 
         expected = entityManager.find(Book.class, book.getId());
         assertThat(expected, is(nullValue()));
@@ -84,7 +83,7 @@ public class JpaBookDaoTest {
         Book testBook2 = entityManager.persistFlushFind(new Book(genre, "testBook2"));
         Book testBook3 = entityManager.persistFlushFind(new Book(genre, "testBook3"));
 
-        List<Book> bookList = bookDao.getAll();
+        List<Book> bookList = bookRepository.findAll();
         assertThat(bookList, containsInAnyOrder(testBook1, testBook2, testBook3));
     }
 
@@ -94,7 +93,7 @@ public class JpaBookDaoTest {
         Book testBook5 = entityManager.persistFlushFind(new Book(genre, "testBook5"));
         Book testBook6 = entityManager.persistFlushFind(new Book(genre, "testBook6"));
 
-        List<Book> bookList = bookDao.getByGenre(genre.getName());
+        List<Book> bookList = bookRepository.findByGenreName(genre.getName());
 
         assertThat(bookList, containsInAnyOrder(testBook5, testBook6));
     }
@@ -110,7 +109,7 @@ public class JpaBookDaoTest {
         entityManager.persistAndFlush(someBook1);
         entityManager.persistAndFlush(someBook2);
 
-        List<Book> bookList = bookDao.getByAuthor(author);
+        List<Book> bookList = bookRepository.findByAuthorName(author.getName());
 
         for (Book book : bookList) {
             assertThat(book.getAuthors(), containsInAnyOrder(author));
@@ -128,7 +127,7 @@ public class JpaBookDaoTest {
         Book expected = entityManager.find(Book.class, book.getId());
         assertThat(expected.getName(), is("some book"));
 
-        bookDao.update(book);
+        bookRepository.save(book);
 
         expected = entityManager.find(Book.class, book.getId());
         assertThat(expected.getName(), is("updated book"));

@@ -1,14 +1,13 @@
-package ru.otus.dao;
+package ru.otus.repositories;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.dao.impl.JpaGenreDao;
+import ru.otus.exeptions.EntityNotFoundException;
 import ru.otus.models.Genre;
 
 import java.util.List;
@@ -21,19 +20,18 @@ import static org.hamcrest.Matchers.nullValue;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-@Import(JpaGenreDao.class)
-@ActiveProfiles("jpa")
-public class JpaGenreDaoTest {
+@ActiveProfiles("springData")
+public class GenreRepositoryTest {
 
     @Autowired
-    private GenreDao genreDao;
+    private GenreRepository genreRepository;
     @Autowired
     private TestEntityManager entityManager;
 
     @Test
     public void testSaveMethod() {
         Genre genre = new Genre("newGenre");
-        genreDao.addGenre(genre);
+        genreRepository.save(genre);
 
         Genre founded = entityManager.find(Genre.class, genre.getId());
         assertThat(founded, is(genre));
@@ -43,7 +41,7 @@ public class JpaGenreDaoTest {
     public void testGetByIdMethod() {
         Genre genre = entityManager.persistFlushFind(new Genre("new genre"));
 
-        Genre foundedById = genreDao.getGenreById(genre.getId());
+        Genre foundedById = genreRepository.findById(genre.getId()).orElse(new Genre("wrong genre"));
         assertThat(foundedById.getName(), is("new genre"));
     }
 
@@ -51,7 +49,7 @@ public class JpaGenreDaoTest {
     public void testGetByName() {
         entityManager.persist(new Genre("new genre"));
 
-        Genre foundedByName = genreDao.getByName("new genre");
+        Genre foundedByName = genreRepository.findByName("new genre").orElseThrow(() -> new EntityNotFoundException("genre not found"));
         assertThat(foundedByName.getName(), is("new genre"));
     }
 
@@ -61,7 +59,7 @@ public class JpaGenreDaoTest {
 
         assertThat(genre, is(notNullValue()));
 
-        genreDao.deleteGenre(genre.getId());
+        genreRepository.delete(genre);
         Genre expected = entityManager.find(Genre.class, genre.getId());
 
         assertThat(expected, is(nullValue()));
@@ -73,7 +71,7 @@ public class JpaGenreDaoTest {
         Genre comedy = entityManager.persistFlushFind(new Genre("Comedy"));
         Genre poem = entityManager.persistFlushFind(new Genre("Poem"));
 
-        List<Genre> genreList = genreDao.getAll();
+        List<Genre> genreList = genreRepository.findAll();
 
         assertThat(genreList, containsInAnyOrder(drama, comedy, poem));
     }

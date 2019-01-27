@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: jpa
+    active: springData
   datasource:
     username: postgres
     password: 784512963
