@@ -1,35 +1,51 @@
 package ru.otus.dao;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.dao.impl.JdbcAuthorDao;
 import ru.otus.dao.impl.JdbcBookDao;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
 import ru.otus.models.Genre;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @JdbcTest
 @Import({JdbcBookDao.class, JdbcAuthorDao.class})
-@Profile("jdbc")
+@ActiveProfiles("jdbc")
 public class JdbcBookDaoTest {
 
     @Autowired
     private NamedParameterJdbcOperations jdbcOperations;
     @Autowired
     private AuthorDao authorDao;
+
+    @BeforeEach
+    public void setUp() {
+        jdbcOperations.update("INSERT INTO genres (genre_name) VALUES ('Poem')", new HashMap<>());
+        jdbcOperations.update("INSERT INTO genres (genre_name) VALUES ('Drama')", new HashMap<>());
+    }
+
+    @AfterEach
+    public void end() {
+        jdbcOperations.update("DELETE FROM books", new HashMap<>());
+        jdbcOperations.update("DELETE FROM genres", new HashMap<>());
+        jdbcOperations.update("DELETE FROM authors", new HashMap<>());
+    }
 
     @Test
     public void testSaveAndGetByNameGetByIdDeleteMethods() {
@@ -49,6 +65,21 @@ public class JdbcBookDaoTest {
 
     @Test
     public void testGetAllBooksMethod() {
+        jdbcOperations.update(
+                "INSERT INTO books (book_name, genre_id) " +
+                        "VALUES ('testBook1', (SELECT g.genre_id FROM genres AS g WHERE genre_name = 'Drama'))",
+                new HashMap<>()
+        );
+        jdbcOperations.update(
+                "INSERT INTO books (book_name, genre_id) " +
+                        "VALUES ('testBook2', (SELECT g.genre_id FROM genres AS g WHERE genre_name = 'Drama'))",
+                new HashMap<>()
+        );
+        jdbcOperations.update(
+                "INSERT INTO books (book_name, genre_id)" +
+                        " VALUES ('testBook3', (SELECT g.genre_id FROM genres AS g WHERE genre_name = 'Drama'))",
+                new HashMap<>()
+        );
         BookDao bookDao = new JdbcBookDao(jdbcOperations, authorDao);
         Book testBook1 = bookDao.getByName("testBook1");
         Book testBook2 = bookDao.getByName("testBook2");
@@ -71,6 +102,8 @@ public class JdbcBookDaoTest {
 
     @Test
     public void testGetByAuthorMethod() {
+        Author testAuthor = new Author("testAuthor");
+        authorDao.save(testAuthor);
         BookDao bookDao = new JdbcBookDao(jdbcOperations, authorDao);
         Author author = authorDao.getByName("testAuthor");
         List<Book> bookList = bookDao.getByAuthor(author);

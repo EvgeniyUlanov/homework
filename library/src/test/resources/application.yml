@@ -1,12 +1,8 @@
 spring:
-  profiles:
-    active: test
-    include: springData
   datasource:
      url: jdbc:h2:mem:library_test
      initialization-mode: always
      schema: schema/schema.sql
-#     data: schema/test-data.sql   # use this only for jdbc test
   jpa:
      hibernate:
        ddl-auto: update
