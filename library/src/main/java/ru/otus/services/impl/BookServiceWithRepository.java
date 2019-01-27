@@ -2,6 +2,7 @@ package ru.otus.services.impl;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import ru.otus.exeptions.EntityNotFoundException;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
 import ru.otus.models.Comment;
@@ -32,7 +33,7 @@ public class BookServiceWithRepository implements BookService {
 
     @Override
     public Book getBookByName(String bookName) {
-        return bookRepository.findByName(bookName);
+        return bookRepository.findByName(bookName).orElse(null);
     }
 
     @Override
@@ -52,11 +53,15 @@ public class BookServiceWithRepository implements BookService {
 
     @Override
     public void addBook(String bookName, String genre, String authorName) {
-        Genre foundedGenre = genreRepository.findByName(genre);
+        Genre foundedGenre = genreRepository
+                .findByName(genre)
+                .orElseThrow(() -> new EntityNotFoundException("genre not found"));
         Author foundedAuthor;
         try {
-            foundedAuthor = authorRepository.findByName(authorName);
-        } catch (Exception e) {
+            foundedAuthor = authorRepository
+                    .findByName(authorName)
+                    .orElseThrow(() -> new EntityNotFoundException("author not found"));
+        } catch (EntityNotFoundException e) {
             foundedAuthor = new Author(authorName);
             authorRepository.save(foundedAuthor);
         }
@@ -72,14 +77,18 @@ public class BookServiceWithRepository implements BookService {
 
     @Override
     public void addCommentToBook(String bookName, String comment) {
-        Book book = bookRepository.findByName(bookName);
+        Book book = bookRepository
+                .findByName(bookName)
+                .orElseThrow(() -> new EntityNotFoundException("book not found"));
         book.getComments().add(new Comment(comment));
         bookRepository.save(book);
     }
 
     @Override
     public List<String> getCommentsByBook(String bookName) {
-        Book book = bookRepository.findByName(bookName);
+        Book book = bookRepository
+                .findByName(bookName)
+                .orElseThrow(() -> new EntityNotFoundException("book not found"));
         List<String> stringComments = new ArrayList<>();
         for (Comment comment : book.getComments()) {
             stringComments.add(comment.getComment());

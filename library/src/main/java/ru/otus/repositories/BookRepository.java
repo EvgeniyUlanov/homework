@@ -8,17 +8,17 @@ import org.springframework.stereotype.Repository;
 import ru.otus.models.Book;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Profile("springData")
 public interface BookRepository extends CrudRepository<Book, Long> {
 
-    Book findByName(String bookName);
+    Optional<Book> findByName(String bookName);
 
     List<Book> findAll();
 
-    @Query("select b from Book b join b.genre g where g.name = :genreName")
-    List<Book> findByGenreName(@Param("genreName") String genre);
+    List<Book> findByGenreName(String genre);
 
     @Query("select b from Book b join b.authors a where a.name = :authorName")
     List<Book> findByAuthorName(@Param("authorName") String authorName);

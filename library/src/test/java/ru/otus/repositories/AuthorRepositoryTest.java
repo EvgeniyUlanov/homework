@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.otus.exeptions.EntityNotFoundException;
 import ru.otus.models.Author;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class AuthorRepositoryTest {
         Author author = new Author("someAuthor");
         entityManager.persistAndFlush(author);
 
-        Author expected = authorRepository.findByName("someAuthor");
+        Author expected = authorRepository.findByName("someAuthor").orElseThrow(() -> new EntityNotFoundException("author not found"));
 
         assertThat(expected, is(notNullValue()));
     }

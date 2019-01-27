@@ -2,6 +2,7 @@ package ru.otus.services.impl;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import ru.otus.exeptions.EntityNotFoundException;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
 import ru.otus.repositories.AuthorRepository;
@@ -34,14 +35,18 @@ public class AuthorServiceWithRepository implements AuthorService {
 
     @Override
     public Author getByName(String name) {
-        return authorRepository.findByName(name);
+        return authorRepository.findByName(name).orElseThrow(() -> new EntityNotFoundException("author not found"));
     }
 
     @Override
     public void addBookToAuthor(String authorName, String bookName) {
-        Book book = bookRepository.findByName(bookName);
-        Author author = authorRepository.findByName(authorName);
-        if (book != null && author != null && !book.getAuthors().contains(author)) {
+        Book book = bookRepository
+                .findByName(bookName)
+                .orElseThrow(() -> new EntityNotFoundException("book not found"));
+        Author author = authorRepository
+                .findByName(authorName)
+                .orElseThrow(() -> new EntityNotFoundException("author not found"));
+        if (!book.getAuthors().contains(author)) {
             book.getAuthors().add(author);
             bookRepository.save(book);
         }

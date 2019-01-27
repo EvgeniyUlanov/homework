@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.otus.exeptions.EntityNotFoundException;
 import ru.otus.models.Genre;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class GenreRepositoryTest {
     public void testGetByName() {
         entityManager.persist(new Genre("new genre"));
 
-        Genre foundedByName = genreRepository.findByName("new genre");
+        Genre foundedByName = genreRepository.findByName("new genre").orElseThrow(() -> new EntityNotFoundException("genre not found"));
         assertThat(foundedByName.getName(), is("new genre"));
     }
 

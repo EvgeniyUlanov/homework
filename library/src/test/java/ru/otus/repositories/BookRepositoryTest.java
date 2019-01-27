@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.otus.exeptions.EntityNotFoundException;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
 import ru.otus.models.Genre;
@@ -46,7 +47,7 @@ public class BookRepositoryTest {
         Book book = new Book(genre, "new book");
         entityManager.persistAndFlush(book);
 
-        Book expected = bookRepository.findByName("new book");
+        Book expected = bookRepository.findByName("new book").orElseThrow(() -> new EntityNotFoundException("book not found"));
         assertThat(expected.getName(), is("new book"));
     }
 
