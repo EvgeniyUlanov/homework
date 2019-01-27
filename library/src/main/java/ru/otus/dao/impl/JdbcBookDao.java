@@ -140,7 +140,7 @@ public class JdbcBookDao implements BookDao {
         jdbcOperations.update("DELETE FROM books where book_id = :id", params);
     }
 
-    private class ResultSetExtractorForBookMap implements ResultSetExtractor<Map<Long, Book>> {
+    private static class ResultSetExtractorForBookMap implements ResultSetExtractor<Map<Long, Book>> {
         @Override
         public Map<Long, Book> extractData(ResultSet rs) throws SQLException, DataAccessException {
             Map<Long, Book> resultBookMap = new TreeMap<>();
@@ -158,7 +158,7 @@ public class JdbcBookDao implements BookDao {
                 Long authorId = rs.getLong("author_id");
                 String authorName = rs.getString("author_name");
                 if (authorName != null) {
-                    Author author = authorList.stream().filter(e -> e.getId() == authorId).findFirst().orElse(null);
+                    Author author = authorList.stream().filter(e -> e.getId().equals(authorId)).findFirst().orElse(null);
                     if (author == null) {
                         author = new Author(rs.getString("author_name"));
                         author.setId(authorId);
@@ -170,7 +170,7 @@ public class JdbcBookDao implements BookDao {
         }
     }
 
-    private class ResultSetExtractorForBook implements ResultSetExtractor<Book> {
+    private static class ResultSetExtractorForBook implements ResultSetExtractor<Book> {
         @Override
         public Book extractData(ResultSet rs) throws SQLException, DataAccessException {
             Book book = null;
@@ -184,7 +184,7 @@ public class JdbcBookDao implements BookDao {
                     Long authorId = rs.getLong("author_id");
                     String authorName = rs.getString("author_name");
                     if (authorName != null) {
-                        Author author = authorList.stream().filter(e -> e.getId() == authorId).findFirst().orElse(null);
+                        Author author = authorList.stream().filter(e -> e.getId().equals(authorId)).findFirst().orElse(null);
                         if (author == null) {
                             author = new Author(authorName);
                             author.setId(authorId);
