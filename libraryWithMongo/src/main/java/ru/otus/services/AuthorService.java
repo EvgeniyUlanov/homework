@@ -11,6 +11,4 @@ public interface AuthorService {
     List<Author> getAll();
 
     Author getByName(String name);
-
-    void addBookToAuthor(String authorName, String bookName);
 }

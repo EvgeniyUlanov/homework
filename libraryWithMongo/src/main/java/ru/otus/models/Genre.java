@@ -2,13 +2,15 @@ package ru.otus.models;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document(collection = "genres")
 public class Genre {
 
     @Id
-    private Long id;
+    private String id;
+    @Indexed(unique = true)
     private String name;
 
     public Genre() {
@@ -18,11 +20,11 @@ public class Genre {
         this.name = name;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

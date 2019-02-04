@@ -18,9 +18,10 @@ public class AuthorServiceWithMongo implements AuthorService {
 
     @Override
     public void addAuthor(String authorName) {
-        Author author = new Author(authorName);
-        author.setId(1L);
-        authorRepository.save(author);
+        Author author = getByName(authorName);
+        if (author == null) {
+            authorRepository.save(new Author(authorName));
+        }
     }
 
     @Override
@@ -30,11 +31,6 @@ public class AuthorServiceWithMongo implements AuthorService {
 
     @Override
     public Author getByName(String name) {
-        return null;
-    }
-
-    @Override
-    public void addBookToAuthor(String authorName, String bookName) {
-
+        return authorRepository.findByName(name).orElse(null);
     }
 }

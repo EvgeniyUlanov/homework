@@ -1,20 +1,25 @@
 package ru.otus.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Document
+@Document(collection = "books")
 public class Book {
 
     @Id
-    private Long id;
+    private String id;
+    @Indexed(unique = true)
     private String name;
+    @DBRef
     private Genre genre;
+    @DBRef
     private List<Author> authors = new ArrayList<>();
-    private List<Comment> comments;
+    private List<String> comments = new ArrayList<>();
 
     public Book() {
     }
@@ -24,11 +29,11 @@ public class Book {
         this.name = name;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -56,11 +61,11 @@ public class Book {
         this.authors = authors;
     }
 
-    public List<Comment> getComments() {
+    public List<String> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<String> comments) {
         this.comments = comments;
     }
 

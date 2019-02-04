@@ -56,4 +56,9 @@ public class BookShellCommands {
     public List<String> showBookComments(@ShellOption String bookName) {
         return bookService.getCommentsByBook(bookName);
     }
+
+    @ShellMethod("add author to book")
+    public void addAuthorToBook(String authorName, String bookName) {
+        bookService.addAuthorToBook(authorName, bookName);
+    }
 }

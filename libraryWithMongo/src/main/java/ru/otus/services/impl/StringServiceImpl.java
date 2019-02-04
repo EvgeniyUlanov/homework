@@ -15,34 +15,14 @@ import java.util.List;
 @Service
 public class StringServiceImpl implements StringService {
 
-    private AuthorService authorService;
     private BookService bookService;
+    private AuthorService authorService;
     private GenreService genreService;
 
-    public StringServiceImpl(AuthorService authorService, BookService bookService, GenreService genreService) {
-        this.authorService = authorService;
+    public StringServiceImpl(BookService bookService, AuthorService authorService, GenreService genreService) {
         this.bookService = bookService;
+        this.authorService = authorService;
         this.genreService = genreService;
-    }
-
-    @Override
-    public List<String> allAuthorsToStringList() {
-        List<Author> authors = authorService.getAll();
-        List<String> authorNameList = new ArrayList<>();
-        for (Author author : authors) {
-            authorNameList.add(author.getName());
-        }
-        return authorNameList;
-    }
-
-    @Override
-    public List<String> allGenresToString() {
-        List<String> genreNameList = new ArrayList<>();
-        List<Genre> genreList = genreService.getAllGenres();
-        for (Genre genre : genreList) {
-            genreNameList.add(genre.getName());
-        }
-        return genreNameList;
     }
 
     @Override
@@ -82,5 +62,25 @@ public class StringServiceImpl implements StringService {
     @Override
     public String bookByNameToString(String bookName) {
         return bookService.getBookByName(bookName).toString();
+    }
+
+    @Override
+    public List<String> allAuthorsToStringList() {
+        List<Author> authors = authorService.getAll();
+        List<String> authorNames = new ArrayList<>();
+        for (Author author : authors) {
+            authorNames.add(author.getName());
+        }
+        return authorNames;
+    }
+
+    @Override
+    public List<String> allGenresToString() {
+        List<Genre> genres = genreService.getAllGenres();
+        List<String> genreNames = new ArrayList<>();
+        for (Genre genre : genres) {
+            genreNames.add(genre.getName());
+        }
+        return genreNames;
     }
 }

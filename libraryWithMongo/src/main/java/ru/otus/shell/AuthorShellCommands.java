@@ -30,9 +30,4 @@ public class AuthorShellCommands {
     public void addAuthor(@ShellOption String authorName) {
         authorService.addAuthor(authorName);
     }
-
-    @ShellMethod("add book to author")
-    public void addBookToAuthor(@ShellOption String authorName, @ShellOption String bookName) {
-        authorService.addBookToAuthor(authorName, bookName);
-    }
 }

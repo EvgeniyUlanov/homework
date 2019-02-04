@@ -18,11 +18,14 @@ public class GenreServiceWithMongo implements GenreService {
 
     @Override
     public List<Genre> getAllGenres() {
-        return null;
+        return genreRepository.findAll();
     }
 
     @Override
     public void addGenre(String genreName) {
-
+        Genre genre = genreRepository.findByName(genreName).orElse(null);
+        if (genre == null) {
+            genreRepository.save(new Genre(genreName));
+        }
     }
 }

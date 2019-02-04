@@ -2,13 +2,15 @@ package ru.otus.models;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "authors")
 public class Author {
 
     @Id
-    private Long id;
+    private String id;
+    @Indexed(unique = true)
     private String name;
 
     public Author() {
@@ -18,11 +20,11 @@ public class Author {
         this.name = name;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
