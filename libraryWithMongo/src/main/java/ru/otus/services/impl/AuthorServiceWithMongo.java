@@ -33,4 +33,9 @@ public class AuthorServiceWithMongo implements AuthorService {
     public Author getByName(String name) {
         return authorRepository.findByName(name).orElse(null);
     }
+
+    @Override
+    public void deleteAuthor(String authorName) {
+        authorRepository.findByName(authorName).ifPresent(author -> authorRepository.delete(author));
+    }
 }

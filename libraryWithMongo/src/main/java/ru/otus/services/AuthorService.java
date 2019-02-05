@@ -11,4 +11,6 @@ public interface AuthorService {
     List<Author> getAll();
 
     Author getByName(String name);
+
+    void deleteAuthor(String authorName);
 }

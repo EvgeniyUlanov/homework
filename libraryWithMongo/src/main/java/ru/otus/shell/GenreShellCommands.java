@@ -30,4 +30,9 @@ public class GenreShellCommands {
     public void addGenre(@ShellOption String genreName) {
         genreService.addGenre(genreName);
     }
+
+    @ShellMethod("delete genre")
+    public void deleteGenre(@ShellOption String genreName) {
+        genreService.deleteGenre(genreName);
+    }
 }

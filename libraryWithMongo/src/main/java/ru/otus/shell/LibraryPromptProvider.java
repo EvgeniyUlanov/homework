@@ -9,6 +9,6 @@ public class LibraryPromptProvider implements PromptProvider {
 
     @Override
     public AttributedString getPrompt() {
-        return new AttributedString("library-app:>");
+        return new AttributedString("library-with-mongo:>");
     }
 }

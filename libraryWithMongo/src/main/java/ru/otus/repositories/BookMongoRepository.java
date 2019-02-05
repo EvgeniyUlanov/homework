@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public interface BookMongoRepository extends MongoRepository<Book, Long> {
+public interface BookMongoRepository extends MongoRepository<Book, String> {
 
     List<Book> findAll();
 

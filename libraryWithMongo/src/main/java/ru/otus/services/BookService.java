@@ -8,7 +8,7 @@ public interface BookService {
 
     Book getBookByName(String bookName);
 
-    Book getBookById(Long id);
+    Book getBookById(String id);
 
     List<Book> getAllBooks();
 
@@ -23,4 +23,6 @@ public interface BookService {
     List<String> getCommentsByBook(String bookName);
 
     void addAuthorToBook(String authorName, String bookName);
+
+    void deleteBook(String bookName);
 }

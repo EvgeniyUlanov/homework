@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public interface AuthorMongoRepository extends MongoRepository<Author, Long> {
+public interface AuthorMongoRepository extends MongoRepository<Author, String> {
 
     List<Author> findAll();
 

@@ -30,4 +30,9 @@ public class AuthorShellCommands {
     public void addAuthor(@ShellOption String authorName) {
         authorService.addAuthor(authorName);
     }
+
+    @ShellMethod("delete author")
+    public void deleteAuthor(@ShellOption String authorName) {
+        authorService.deleteAuthor(authorName);
+    }
 }

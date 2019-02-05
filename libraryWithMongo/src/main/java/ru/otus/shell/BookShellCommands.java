@@ -21,14 +21,20 @@ public class BookShellCommands {
         this.bookService = bookService;
     }
 
-    @ShellMethod("shows book by name")
-    public String showBookByName(@ShellOption String bookName) {
-        return stringService.bookByNameToString(bookName);
+    @ShellMethod("add book, example: add-book 'book name' genreName 'author name'," +
+            " to add another author use command add-author-to-book")
+    public void addBook(@ShellOption String bookName, @ShellOption String genre, @ShellOption String author) {
+        bookService.addBook(bookName, genre, author);
     }
 
     @ShellMethod("shows all books")
     public List<String> showAllBooks() {
         return stringService.allBooksToString();
+    }
+
+    @ShellMethod("shows book by name")
+    public String showBookByName(@ShellOption String bookName) {
+        return stringService.bookByNameToString(bookName);
     }
 
     @ShellMethod("shows books by genre")
@@ -39,12 +45,6 @@ public class BookShellCommands {
     @ShellMethod("shows books by author")
     public List<String> showBooksByAuthor(@ShellOption String authorName) {
         return stringService.bookByAuthorToString(authorName);
-    }
-
-    @ShellMethod("add book, example: add-book 'book name' genreName baseAuthorName," +
-            " to add another author use command add-author-to-book")
-    public void addBook(@ShellOption String bookName, @ShellOption String genre, @ShellOption String author) {
-        bookService.addBook(bookName, genre, author);
     }
 
     @ShellMethod("add comment to book")
@@ -58,7 +58,12 @@ public class BookShellCommands {
     }
 
     @ShellMethod("add author to book")
-    public void addAuthorToBook(String authorName, String bookName) {
+    public void addAuthorToBook(@ShellOption String authorName, @ShellOption String bookName) {
         bookService.addAuthorToBook(authorName, bookName);
+    }
+
+    @ShellMethod("delete book")
+    public void deleteBook(@ShellOption String bookName) {
+        bookService.deleteBook(bookName);
     }
 }

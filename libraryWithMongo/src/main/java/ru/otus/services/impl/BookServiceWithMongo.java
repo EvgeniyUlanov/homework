@@ -33,7 +33,7 @@ public class BookServiceWithMongo implements BookService {
     }
 
     @Override
-    public Book getBookById(Long id) {
+    public Book getBookById(String id) {
         return bookRepository.findById(id).orElse(null);
     }
 
@@ -59,7 +59,7 @@ public class BookServiceWithMongo implements BookService {
             author = authorRepository.save(new Author(authorName));
         }
         book.getAuthors().add(author);
-        bookRepository.insert(book);
+        bookRepository.save(book);
     }
 
     @Override
@@ -91,5 +91,10 @@ public class BookServiceWithMongo implements BookService {
         }
         book.getAuthors().add(author);
         bookRepository.save(book);
+    }
+
+    @Override
+    public void deleteBook(String bookName) {
+        bookRepository.findByName(bookName).ifPresent(book -> bookRepository.delete(book));
     }
 }

@@ -28,4 +28,9 @@ public class GenreServiceWithMongo implements GenreService {
             genreRepository.save(new Genre(genreName));
         }
     }
+
+    @Override
+    public void deleteGenre(String genreName) {
+        genreRepository.findByName(genreName).ifPresent(genre -> genreRepository.delete(genre));
+    }
 }
