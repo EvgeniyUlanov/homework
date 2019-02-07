@@ -1,7 +1,7 @@
 package ru.otus.services.impl;
 
 import org.springframework.stereotype.Service;
-import ru.otus.customExeptions.BookNotFoundException;
+import ru.otus.customExeptions.DocumentNotFoundException;
 import ru.otus.models.Author;
 import ru.otus.models.Book;
 import ru.otus.models.Genre;
@@ -43,8 +43,11 @@ public class BookServiceWithMongo implements BookService {
     }
 
     @Override
-    public List<Book> getBookByGenre(String genre) {
-        return bookRepository.findByGenreName(genre);
+    public List<Book> getBookByGenre(String genreName) {
+        Genre genre = genreRepository
+                .findByName(genreName)
+                .orElseThrow(() -> new DocumentNotFoundException("genre not found"));
+        return bookRepository.findByGenre(genre);
     }
 
     @Override
@@ -64,12 +67,13 @@ public class BookServiceWithMongo implements BookService {
 
     @Override
     public List<Book> getBookByAuthor(String authorName) {
-        return bookRepository.findByAuthorsContains(authorName);
+        Author author = authorRepository.findByName(authorName).orElseThrow(() -> new DocumentNotFoundException("author not found"));
+        return bookRepository.findByAuthorsContains(author);
     }
 
     @Override
     public void addCommentToBook(String bookName, String comment) {
-        Book book = bookRepository.findByName(bookName).orElseThrow(() -> new BookNotFoundException("book not found"));
+        Book book = bookRepository.findByName(bookName).orElseThrow(() -> new DocumentNotFoundException("book not found"));
         book.getComments().add(comment);
         bookRepository.save(book);
     }
@@ -78,13 +82,13 @@ public class BookServiceWithMongo implements BookService {
     public List<String> getCommentsByBook(String bookName) {
         return bookRepository
                 .findByName(bookName)
-                .orElseThrow(() -> new BookNotFoundException("book not found"))
+                .orElseThrow(() -> new DocumentNotFoundException("book not found"))
                 .getComments();
     }
 
     @Override
     public void addAuthorToBook(String authorName, String bookName) {
-        Book book = bookRepository.findByName(bookName).orElseThrow(() -> new BookNotFoundException("book not found"));
+        Book book = bookRepository.findByName(bookName).orElseThrow(() -> new DocumentNotFoundException("book not found"));
         Author author = authorRepository.findByName(authorName).orElse(null);
         if (author == null) {
             author = authorRepository.save(new Author(authorName));
