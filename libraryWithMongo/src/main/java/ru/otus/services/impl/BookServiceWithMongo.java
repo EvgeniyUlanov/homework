@@ -52,28 +52,30 @@ public class BookServiceWithMongo implements BookService {
 
     @Override
     public void addBook(String bookName, String genreName, String authorName) {
-        Genre genre = genreRepository.findByName(genreName).orElse(null);
-        if (genre == null) {
-            genre = genreRepository.save(new Genre(genreName));
-        }
+        Genre genre = genreRepository
+                .findByName(genreName)
+                .orElseGet(() -> genreRepository.save(new Genre(genreName)));
         Book book = new Book(genre, bookName);
-        Author author = authorRepository.findByName(authorName).orElse(null);
-        if (author == null) {
-            author = authorRepository.save(new Author(authorName));
-        }
+        Author author = authorRepository
+                .findByName(authorName)
+                .orElseGet(() -> authorRepository.save(new Author(authorName)));
         book.getAuthors().add(author);
         bookRepository.save(book);
     }
 
     @Override
     public List<Book> getBookByAuthor(String authorName) {
-        Author author = authorRepository.findByName(authorName).orElseThrow(() -> new DocumentNotFoundException("author not found"));
+        Author author = authorRepository
+                .findByName(authorName)
+                .orElseThrow(() -> new DocumentNotFoundException("author not found"));
         return bookRepository.findByAuthorsContains(author);
     }
 
     @Override
     public void addCommentToBook(String bookName, String comment) {
-        Book book = bookRepository.findByName(bookName).orElseThrow(() -> new DocumentNotFoundException("book not found"));
+        Book book = bookRepository
+                .findByName(bookName)
+                .orElseThrow(() -> new DocumentNotFoundException("book not found"));
         book.getComments().add(comment);
         bookRepository.save(book);
     }
@@ -88,11 +90,12 @@ public class BookServiceWithMongo implements BookService {
 
     @Override
     public void addAuthorToBook(String authorName, String bookName) {
-        Book book = bookRepository.findByName(bookName).orElseThrow(() -> new DocumentNotFoundException("book not found"));
-        Author author = authorRepository.findByName(authorName).orElse(null);
-        if (author == null) {
-            author = authorRepository.save(new Author(authorName));
-        }
+        Book book = bookRepository
+                .findByName(bookName)
+                .orElseThrow(() -> new DocumentNotFoundException("book not found"));
+        Author author = authorRepository
+                .findByName(authorName)
+                .orElseGet(() -> authorRepository.save(new Author(authorName)));
         book.getAuthors().add(author);
         bookRepository.save(book);
     }
