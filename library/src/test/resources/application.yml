@@ -1,8 +1,13 @@
 spring:
+  profiles:
+    active: springData
+---
+spring:
+  profiles: jdbc, jpa, springData
   datasource:
-     url: jdbc:h2:mem:library_test
-     initialization-mode: always
-     schema: schema/schema.sql
+      url: jdbc:h2:mem:library_test
+      initialization-mode: always
+      schema: schema/schema.sql
   jpa:
      hibernate:
        ddl-auto: update
